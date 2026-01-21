@@ -1,0 +1,92 @@
+<svg width="1000px" height="500px" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+    <title>Teclado 75% Morado Completo</title>
+    <defs>
+        <style>
+         
+            .chassis-color { fill: #5E188D; } /* Color morado sólido de la imagen */
+            .shadow-color { fill: #000000; }
+            .key-style { fill: #000000; rx: 10px; ry: 10px; } /* Teclas negras redondeadas */
+        </style>
+    </defs>
+
+    <rect class="shadow-color" x="50" y="40" width="920" height="420" rx="30" ry="30" />
+
+    <rect class="chassis-color" x="30" y="20" width="920" height="420" rx="30" ry="30" />
+
+    <g transform="translate(65, 55)">
+        <g>
+            <rect class="key-style" x="0" y="0" width="50" height="50"/> <rect class="key-style" x="60" y="0" width="50" height="50"/>
+            <rect class="key-style" x="120" y="0" width="50" height="50"/>
+            <rect class="key-style" x="180" y="0" width="50" height="50"/>
+            <rect class="key-style" x="240" y="0" width="50" height="50"/>
+            <rect class="key-style" x="310" y="0" width="50" height="50"/>
+            <rect class="key-style" x="370" y="0" width="50" height="50"/>
+            <rect class="key-style" x="430" y="0" width="50" height="50"/>
+            <rect class="key-style" x="490" y="0" width="50" height="50"/>
+             <rect class="key-style" x="560" y="0" width="50" height="50"/>
+            <rect class="key-style" x="620" y="0" width="50" height="50"/>
+            <rect class="key-style" x="680" y="0" width="50" height="50"/>
+            <rect class="key-style" x="740" y="0" width="50" height="50"/>
+            <rect class="key-style" x="800" y="0" width="50" height="50"/>
+            <rect class="key-style" x="860" y="0" width="50" height="50"/>
+        </g>
+
+        <g transform="translate(0, 60)">
+            <rect class="key-style" x="0" y="0" width="50" height="50"/>
+            <rect class="key-style" x="60" y="0" width="50" height="50"/>
+            <rect class="key-style" x="120" y="0" width="50" height="50"/>
+            <rect class="key-style" x="180" y="0" width="50" height="50"/>
+            <rect class="key-style" x="240" y="0" width="50" height="50"/>
+            <rect class="key-style" x="300" y="0" width="50" height="50"/>
+            <rect class="key-style" x="360" y="0" width="50" height="50"/>
+            <rect class="key-style" x="420" y="0" width="50" height="50"/>
+            <rect class="key-style" x="480" y="0" width="50" height="50"/>
+            <rect class="key-style" x="540" y="0" width="50" height="50"/>
+            <rect class="key-style" x="600" y="0" width="50" height="50"/>
+            <rect class="key-style" x="660" y="0" width="50" height="50"/>
+            <rect class="key-style" x="720" y="0" width="110" height="50"/> <rect class="key-style" x="860" y="0" width="50" height="50"/> </g>
+
+        <g transform="translate(0, 120)">
+            <rect class="key-style" x="0" y="0" width="80" height="50"/> <rect class="key-style" x="90" y="0" width="50" height="50"/>
+            <rect class="key-style" x="150" y="0" width="50" height="50"/>
+            <rect class="key-style" x="210" y="0" width="50" height="50"/>
+            <rect class="key-style" x="270" y="0" width="50" height="50"/>
+            <rect class="key-style" x="330" y="0" width="50" height="50"/>
+            <rect class="key-style" x="390" y="0" width="50" height="50"/>
+            <rect class="key-style" x="450" y="0" width="50" height="50"/>
+            <rect class="key-style" x="510" y="0" width="50" height="50"/>
+            <rect class="key-style" x="570" y="0" width="50" height="50"/>
+            <rect class="key-style" x="630" y="0" width="50" height="50"/>
+            <rect class="key-style" x="690" y="0" width="50" height="50"/>
+            <path class="key-style" d="M750,0 h80 a10,10 0 0 1 10,10 v100 a10,10 0 0 1 -10,10 h-50 a10,10 0 0 1 -10,-10 v-50 h-20 a10,10 0 0 1 -10,-10 v-40 a10,10 0 0 1 10,-10 z" />
+            <rect class="key-style" x="860" y="0" width="50" height="50"/> </g>
+
+        <g transform="translate(0, 180)">
+            <rect class="key-style" x="0" y="0" width="95" height="50"/> <rect class="key-style" x="105" y="0" width="50" height="50"/>
+            <rect class="key-style" x="165" y="0" width="50" height="50"/>
+            <rect class="key-style" x="225" y="0" width="50" height="50"/>
+            <rect class="key-style" x="285" y="0" width="50" height="50"/>
+            <rect class="key-style" x="345" y="0" width="50" height="50"/>
+            <rect class="key-style" x="405" y="0" width="50" height="50"/>
+            <rect class="key-style" x="465" y="0" width="50" height="50"/>
+            <rect class="key-style" x="525" y="0" width="50" height="50"/>
+            <rect class="key-style" x="585" y="0" width="50" height="50"/>
+            <rect class="key-style" x="645" y="0" width="50" height="50"/>
+            <rect class="key-style" x="705" y="0" width="35" height="50"/> <rect class="key-style" x="860" y="0" width="50" height="50"/> </g>
+
+        <g transform="translate(0, 240)">
+            <rect class="key-style" x="0" y="0" width="125" height="50"/> <rect class="key-style" x="135" y="0" width="50" height="50"/>
+            <rect class="key-style" x="195" y="0" width="50" height="50"/>
+            <rect class="key-style" x="255" y="0" width="50" height="50"/>
+            <rect class="key-style" x="315" y="0" width="50" height="50"/>
+            <rect class="key-style" x="375" y="0" width="50" height="50"/>
+            <rect class="key-style" x="435" y="0" width="50" height="50"/>
+            <rect class="key-style" x="495" y="0" width="50" height="50"/>
+            <rect class="key-style" x="555" y="0" width="50" height="50"/>
+            <rect class="key-style" x="615" y="0" width="50" height="50"/>
+            <rect class="key-style" x="675" y="0" width="85" height="50"/> <rect class="key-style" x="770" y="0" width="50" height="50"/> <rect class="key-style" x="860" y="0" width="50" height="50"/> </g>
+
+         <g transform="translate(0, 300)">
+            <rect class="key-style" x="0" y="0" width="65" height="50"/> <rect class="key-style" x="75" y="0" width="65" height="50"/> <rect class="key-style" x="150" y="0" width="65" height="50"/> <rect class="key-style" x="225" y="0" width="315" height="50"/> <rect class="key-style" x="550" y="0" width="50" height="50"/> <rect class="key-style" x="610" y="0" width="50" height="50"/> <rect class="key-style" x="670" y="0" width="50" height="50"/> <rect class="key-style" x="730" y="0" width="50" height="50"/> <rect class="key-style" x="790" y="0" width="50" height="50"/> <rect class="key-style" x="850" y="0" width="50" height="50"/> </g>
+    </g>
+</svg>
