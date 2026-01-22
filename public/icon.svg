@@ -9,9 +9,9 @@
         </style>
     </defs>
 
-    <rect class="shadow-color" x="50" y="40" width="920" height="420" rx="30" ry="30" />
+    <rect class="shadow-color" x="50" y="40" width="1000" height="420" rx="30" ry="30" />
 
-    <rect class="chassis-color" x="30" y="20" width="920" height="420" rx="30" ry="30" />
+    <rect class="chassis-color" x="30" y="20" width="1000" height="420" rx="30" ry="30" />
 
     <g transform="translate(65, 55)">
         <g>
