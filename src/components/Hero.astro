@@ -16,11 +16,13 @@ import avatar from '../assets/avatar-welcome-wb.webp';
     .hero {
         display: flex;
         align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-        max-width: 1200px;
-        margin: 3rem auto;
-        padding: 3rem;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        gap: 2rem;
+    }
+    .hero-content {
+        max-width: 560px;
     }
     .hero h1 {
         margin: 0 0 1rem;
@@ -44,6 +46,7 @@ import avatar from '../assets/avatar-welcome-wb.webp';
             flex-direction: column;
             text-align: center;
             padding: 2rem;
+            min-height: auto;
         }
         .hero-image {
             width: 100%;

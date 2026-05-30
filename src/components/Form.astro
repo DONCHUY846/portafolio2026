@@ -1,0 +1,71 @@
+
+<div class="form-container">
+    <h2>Contact Me</h2>
+<form action="" method="POST" id="contact-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+
+    <button type="submit">Send</button>
+</form>
+
+</div>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(226, 232, 255, 0.6);
+        box-shadow: 0 24px 80px rgba(99, 102, 241, 0.14);
+        border-radius: 32px;
+        backdrop-filter: blur(16px);
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    input,
+    textarea {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    button {
+        padding: 0.75rem;
+        background-color: #b36bcd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #9e30c9;
+    }
+</style>
+
+---
+<script>
+    // You can add JavaScript here to handle form submission, validation, etc.
+    const form = document.getElementById('contact-form') || null;
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Form submitted!');
+        });
+    }
+</script>
+---
