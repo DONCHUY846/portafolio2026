@@ -1,0 +1,52 @@
+---
+import avatar from '../assets/avatar-welcome-wb.webp';
+---
+
+<div class="hero">
+    <div class="hero-content">
+        <h1>Hi, I'm Jesus Avina</h1>
+        <p>I'm a software developer specializing in web development and design. I create beautiful and functional websites that help businesses and individuals establish their online presence.</p>
+    </div>
+    <div class="hero-image">
+        <img src={avatar.src} alt="Avatar Welcome" />
+    </div>
+</div>
+
+<style>
+    .hero {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 3rem;
+    }
+    .hero h1 {
+        margin: 0 0 1rem;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        line-height: 1.05;
+    }
+    .hero p {
+        margin: 0;
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #4b5563;
+    }
+    .hero-image img {
+        width: 100%;
+        max-width: 380px;
+        object-fit: cover;
+        display: block;
+    }
+    @media (max-width: 900px) {
+        .hero {
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+        .hero-image {
+            width: 100%;
+        }
+    }
+</style>
