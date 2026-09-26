@@ -1,0 +1,469 @@
+---
+interface NavLink {
+	num: string;
+	label: string;
+	href: string;
+}
+
+const defaultLinks: NavLink[] = [
+	{ num: '01', label: 'PROYECTOS', href: '#proyectos' },
+	{ num: '02', label: 'STACK & REACT', href: '#stack' },
+	{ num: '03', label: 'SOBRE MÍ', href: '#sobre-mi' },
+	{ num: '04', label: 'CONTACTO', href: '#contacto' },
+];
+
+const {
+	brandHref = '/',
+	brand = '[ JA ] // DEV',
+	status = 'OPEN TO WORK / DISPONIBLE',
+	activePath = '',
+	links = defaultLinks,
+	ctaLabel = 'CONTACTAR',
+	ctaHref = 'mailto:jesusavina@example.com',
+} = Astro.props;
+---
+
+<header class="header" data-header>
+	<div class="header__bar">
+		<div class="header__identity">
+			<a class="brand" href={brandHref}>{brand}</a>
+			<p class="status">
+				<span class="status__dot" aria-hidden="true"></span>
+				<span class="status__label">{status}</span>
+			</p>
+		</div>
+
+		<nav class="nav" aria-label="Principal">
+			<ul class="nav__list">
+				{
+					links.map((link : NavLink ) => (
+						<li>
+							<a
+								class="nav__link"
+								href={link.href}
+								aria-current={activePath === link.href ? 'page' : undefined}
+							>
+								<span class="nav__num" aria-hidden="true">{link.num}.</span>
+								<span class="nav__label">{link.label}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="header__actions">
+			<a class="cta" href={ctaHref}>
+				<span>{ctaLabel}</span>
+				<span class="cta__arrow" aria-hidden="true">↗</span>
+			</a>
+		</div>
+
+		<button
+			class="toggle"
+			type="button"
+			aria-expanded="false"
+			aria-controls="site-menu"
+			aria-label="Abrir menú de navegación"
+			data-menu-toggle
+		>
+			<span class="toggle__bars" aria-hidden="true">
+				<span></span>
+				<span></span>
+				<span></span>
+			</span>
+		</button>
+	</div>
+
+	<div class="panel" id="site-menu" data-menu-panel hidden>
+		<ul class="panel__list">
+			{
+				links.map((link : NavLink) => (
+					<li>
+						<a
+							class="panel__link"
+							href={link.href}
+							aria-current={activePath === link.href ? 'page' : undefined}
+						>
+							<span class="panel__num" aria-hidden="true">{link.num}.</span>
+							<span class="panel__label">{link.label}</span>
+						</a>
+					</li>
+				))
+			}
+			<li>
+				<a class="panel__cta" href={ctaHref}>
+					<span>{ctaLabel}</span>
+					<span class="cta__arrow" aria-hidden="true">↗</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</header>
+
+<style>
+	.header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		width: 100%;
+		background-color: var(--background-color);
+		border-bottom: var(--border-heavy);
+		font-family: var(--label-font);
+	}
+
+	.header__bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-lg);
+		max-width: 1200px;
+		margin-inline: auto;
+		padding: var(--space-md) var(--gutter);
+	}
+
+	.header__identity {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		min-width: 0;
+	}
+
+	.brand {
+		flex-shrink: 0;
+		padding: 6px 12px;
+		background-color: var(--surface-lowest-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		color: var(--primary-color);
+		font-size: var(--font-body-sm-size);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		white-space: nowrap;
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press),
+			background-color var(--transition-surface),
+			color var(--transition-surface);
+	}
+
+	.brand:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: var(--shadow-md);
+		background-color: var(--surface-inset-color);
+	}
+
+	.brand:active {
+		transform: translate(2px, 2px);
+		box-shadow: 0 0 0 0 var(--border-dark);
+	}
+
+	.status {
+		display: none;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: 4px 12px;
+		background-color: var(--surface-container-low-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-full);
+	}
+
+	.status__dot {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		border-radius: var(--radius-full);
+		background-color: var(--status-available);
+		animation: status-pulse 2s ease-in-out infinite;
+	}
+
+	.status__label {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.nav {
+		display: none;
+	}
+
+	.nav__list {
+		display: flex;
+		align-items: center;
+		gap: var(--space-lg);
+	}
+
+	.nav__link {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+		color: var(--on-surface-variant-color);
+		transition: color var(--transition-surface);
+	}
+
+	.nav__num {
+		font-size: 10px;
+		color: var(--outline-color);
+		transition: color var(--transition-surface);
+	}
+
+	.nav__label {
+		padding-bottom: 2px;
+		border-bottom: 2px solid transparent;
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		transition: border-color var(--transition-underline);
+	}
+
+	.nav__link:hover,
+	.nav__link[aria-current='page'] {
+		color: var(--primary-color);
+	}
+
+	.nav__link:hover .nav__num,
+	.nav__link[aria-current='page'] .nav__num {
+		color: var(--primary-color);
+	}
+
+	.nav__link:hover .nav__label,
+	.nav__link[aria-current='page'] .nav__label {
+		border-bottom-color: var(--border-dark);
+	}
+
+	.header__actions {
+		display: none;
+	}
+
+	.cta {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: 8px 20px;
+		background-color: var(--primary-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		color: var(--neutral-color);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press);
+	}
+
+	.cta:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.cta:active {
+		transform: translate(2px, 2px);
+		box-shadow: 0 0 0 0 var(--border-dark);
+	}
+
+	.cta__arrow {
+		font-size: var(--font-body-sm-size);
+	}
+
+	.toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 36px;
+		flex-shrink: 0;
+		background-color: var(--surface-lowest-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press);
+	}
+
+	.toggle:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.toggle:active {
+		transform: translate(2px, 2px);
+		box-shadow: 0 0 0 0 var(--border-dark);
+	}
+
+	.toggle__bars {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.toggle__bars > span {
+		display: block;
+		width: 18px;
+		height: 2px;
+		background-color: var(--primary-color);
+		transition: transform var(--transition-surface), opacity var(--transition-surface);
+	}
+
+	.toggle[aria-expanded='true'] .toggle__bars > span:nth-child(1) {
+		transform: translateY(6px) rotate(45deg);
+	}
+
+	.toggle[aria-expanded='true'] .toggle__bars > span:nth-child(2) {
+		opacity: 0;
+	}
+
+	.toggle[aria-expanded='true'] .toggle__bars > span:nth-child(3) {
+		transform: translateY(-6px) rotate(-45deg);
+	}
+
+	.panel {
+		border-top: var(--border-thin);
+		background-color: var(--background-color);
+	}
+
+	.panel:not([hidden]) {
+		animation: panel-in var(--transition-surface) both;
+	}
+
+	.panel__list {
+		display: flex;
+		flex-direction: column;
+		max-width: 1200px;
+		margin-inline: auto;
+		padding: var(--space-md) var(--gutter) var(--space-lg);
+	}
+
+	.panel__link {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+		padding: var(--space-md) 0;
+		border-bottom: var(--border-thin);
+		color: var(--on-surface-variant-color);
+	}
+
+	.panel__link[aria-current='page'] {
+		color: var(--primary-color);
+	}
+
+	.panel__num {
+		font-size: 10px;
+		color: var(--outline-color);
+	}
+
+	.panel__label {
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.panel__cta {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-sm);
+		margin-top: var(--space-lg);
+		padding: 12px 20px;
+		background-color: var(--primary-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		color: var(--neutral-color);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	@keyframes status-pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.35;
+		}
+	}
+
+	@keyframes panel-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (min-width: 768px) {
+		.status {
+			display: flex;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.header__bar {
+			padding-inline: var(--gutter-desktop);
+		}
+
+		.nav {
+			display: block;
+		}
+
+		.header__actions {
+			display: block;
+		}
+
+		.toggle {
+			display: none;
+		}
+
+		.panel {
+			display: none;
+		}
+
+		.panel__list {
+			max-width: 1200px;
+			padding-inline: var(--gutter-desktop);
+		}
+	}
+</style>
+
+<script>
+	const header = document.querySelector<HTMLElement>('[data-header]');
+	const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const panel = header?.querySelector<HTMLElement>('[data-menu-panel]');
+
+	const setOpen = (open: boolean) => {
+		if (!toggle || !panel) return;
+		toggle.setAttribute('aria-expanded', String(open));
+		toggle.setAttribute('aria-label', open ? 'Cerrar menú de navegación' : 'Abrir menú de navegación');
+		panel.hidden = !open;
+	};
+
+	toggle?.addEventListener('click', () => {
+		setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+	});
+
+	panel?.addEventListener('click', (event) => {
+		if ((event.target as HTMLElement).closest('a')) setOpen(false);
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') setOpen(false);
+	});
+
+	window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+		if (event.matches) setOpen(false);
+	});
+</script>
