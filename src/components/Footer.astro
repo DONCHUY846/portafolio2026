@@ -1,15 +1,25 @@
 ---
+import { ArrowUpRight, Mail } from '@lucide/astro/icons';
+import { siGithub } from 'simple-icons';
+
+type IconKey = 'github' | 'linkedin' | 'mail';
+
 interface SocialLink {
 	label: string;
 	href: string;
+	icon: IconKey;
 }
 
-
 const defaultSocialLinks: SocialLink[] = [
-	{ label: 'GITHUB', href: 'https://github.com' },
-	{ label: 'LINKEDIN', href: 'https://linkedin.com' },
-	{ label: 'EMAIL', href: 'mailto:jesusavina@example.com' },
+	{ label: 'GITHUB', href: 'https://github.com', icon: 'github' },
+	{ label: 'LINKEDIN', href: 'https://linkedin.com', icon: 'linkedin' },
+	{ label: 'EMAIL', href: 'mailto:jesusavina@example.com', icon: 'mail' },
 ];
+
+const linkedinPath =
+	'M347.445,0H34.555C15.471,0,0,15.471,0,34.555v312.889C0,366.529,15.471,382,34.555,382h312.889C366.529,382,382,366.529,382,347.444V34.555C382,15.471,366.529,0,347.445,0z M118.207,329.844c0,5.554-4.502,10.056-10.056,10.056H65.345c-5.554,0-10.056-4.502-10.056-10.056V150.403c0-5.554,4.502-10.056,10.056-10.056h42.806c5.554,0,10.056,4.502,10.056,10.056V329.844z M86.748,123.432c-22.459,0-40.666-18.207-40.666-40.666S64.289,42.1,86.748,42.1s40.666,18.207,40.666,40.666S109.208,123.432,86.748,123.432z M341.91,330.654c0,5.106-4.14,9.246-9.246,9.246H286.73c-5.106,0-9.246-4.14-9.246-9.246v-84.168c0-12.556,3.683-55.021-32.813-55.021c-28.309,0-34.051,29.066-35.204,42.11v97.079c0,5.106-4.139,9.246-9.246,9.246h-44.426c-5.106,0-9.246-4.14-9.246-9.246V149.593c0-5.106,4.14-9.246,9.246-9.246h44.426c5.106,0,9.246,4.14,9.246,9.246v15.655c10.497-15.753,26.097-27.912,59.312-27.912c73.552,0,73.131,68.716,73.131,106.472L341.91,330.654L341.91,330.654z';
+
+const isExternal = (href: string) => href.startsWith('http');
 
 const {
 	socialLinks = defaultSocialLinks,
@@ -27,16 +37,38 @@ const {
 				<span class="bar__location">{location}</span>
 				<span class="bar__timezone">· {timezone}</span>
 			</p>
-			<p class="bar__social" aria-hidden="true">
+
+			<ul class="bar__social">
 				{
-					socialLinks.map((link : SocialLink, index : number) => (
-						<>
-							{index > 0 && <span class="bar__sep">/</span>}
-							<span class="bar__social-item">{link.label}</span>
-						</>
+					socialLinks.map((link : SocialLink) => (
+						<li>
+							<a
+								class="social"
+								href={link.href}
+								target={isExternal(link.href) ? '_blank' : undefined}
+								rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+							>
+								<span class="social__icon" aria-hidden="true">
+									{link.icon === 'github' && (
+										<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+											<path d={siGithub.path} />
+										</svg>
+									)}
+									{link.icon === 'linkedin' && (
+										<svg viewBox="0 0 382 382" width="14" height="14" fill="currentColor">
+											<path d={linkedinPath} />
+										</svg>
+									)}
+									{link.icon === 'mail' && <Mail size={14} stroke-width={2} />}
+								</span>
+								<span class="social__label">{link.label}</span>
+								<ArrowUpRight size={12} stroke-width={2} class="social__arrow" />
+							</a>
+						</li>
 					))
 				}
-			</p>
+			</ul>
+
 			<p class="bar__copyright">{copyright}</p>
 		</div>
 	</div>
@@ -56,192 +88,6 @@ const {
 		overflow: hidden;
 	}
 
-	.footer__main {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xl);
-		padding: var(--space-lg);
-	}
-
-	.brand {
-		display: inline-block;
-		padding: 6px 12px;
-		background-color: var(--surface-lowest-color);
-		border: var(--border-heavy);
-		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-sm);
-		color: var(--primary-color);
-		font-size: var(--font-code-size);
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		white-space: nowrap;
-		transition:
-			transform var(--transition-press),
-			box-shadow var(--transition-press),
-			background-color var(--transition-surface);
-	}
-
-	.brand:hover {
-		transform: translate(-1px, -1px);
-		box-shadow: var(--shadow-md);
-		background-color: var(--surface-inset-color);
-	}
-
-	.brand:active {
-		transform: translate(2px, 2px);
-		box-shadow: 0 0 0 0 var(--border-dark);
-	}
-
-	.tagline {
-		margin-top: var(--space-md);
-		max-width: 34ch;
-		color: var(--on-surface-variant-color);
-		font-family: var(--body-font);
-		font-size: var(--font-body-md-size);
-		line-height: 1.6;
-	}
-
-	.cta {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-sm);
-		margin-top: var(--space-lg);
-		padding: 12px 24px;
-		background-color: var(--primary-color);
-		border: var(--border-thin);
-		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-sm);
-		color: var(--neutral-color);
-		font-size: var(--font-code-size);
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		transition:
-			transform var(--transition-press),
-			box-shadow var(--transition-press);
-	}
-
-	.cta:hover {
-		transform: translate(-1px, -1px);
-		box-shadow: var(--shadow-md);
-	}
-
-	.cta:active {
-		transform: translate(2px, 2px);
-		box-shadow: 0 0 0 0 var(--border-dark);
-	}
-
-	.cta__arrow {
-		font-size: var(--font-body-sm-size);
-	}
-
-	.label {
-		margin-bottom: var(--space-md);
-		font-family: var(--headline-font);
-		font-size: var(--font-label-size);
-		font-weight: 600;
-		line-height: 18px;
-		letter-spacing: 0.08em;
-		color: var(--outline-color);
-	}
-
-	.nav__list,
-	.social__list {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.nav__link,
-	.social__link {
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-sm);
-		padding: var(--space-sm) 0;
-		color: var(--primary-color);
-		transition: color var(--transition-surface);
-	}
-
-	.social__link {
-		align-items: center;
-		justify-content: space-between;
-		border-bottom: var(--border-thin);
-	}
-
-	.social__list > li:last-child .social__link {
-		border-bottom: 0;
-	}
-
-	.nav__num {
-		font-size: 10px;
-		color: var(--outline-color);
-		transition: color var(--transition-surface);
-	}
-
-	.nav__label,
-	.social__label {
-		font-size: var(--font-code-size);
-		font-weight: 500;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.nav__label,
-	.social__label {
-		background-image: linear-gradient(currentColor, currentColor);
-		background-repeat: no-repeat;
-		background-position: 0 100%;
-		background-size: 0% 1px;
-		transition: background-size var(--transition-underline);
-	}
-
-	.nav__link:hover,
-	.social__link:hover {
-		color: var(--on-surface-variant-color);
-	}
-
-	.nav__link:hover .nav__num {
-		color: var(--primary-color);
-	}
-
-	.nav__link:hover .nav__label,
-	.social__link:hover .social__label {
-		background-size: 100% 1px;
-	}
-
-	.social__arrow {
-		font-size: var(--font-body-sm-size);
-	}
-
-	.status {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-sm);
-		margin-top: var(--space-md);
-		padding: 4px 12px;
-		background-color: var(--surface-low-color);
-		border: var(--border-thin);
-		border-radius: var(--radius-full);
-	}
-
-	.status__dot,
-	.bar__dot {
-		width: 8px;
-		height: 8px;
-		flex-shrink: 0;
-		border-radius: var(--radius-full);
-		background-color: var(--status-available);
-		animation: status-pulse 2s ease-in-out infinite;
-	}
-
-	.status__label {
-		font-size: 11px;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		white-space: nowrap;
-	}
-
 	.bar {
 		display: flex;
 		flex-direction: column;
@@ -257,6 +103,15 @@ const {
 		gap: var(--space-sm);
 	}
 
+	.bar__dot {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		border-radius: var(--radius-full);
+		background-color: var(--status-available);
+		animation: status-pulse 2s ease-in-out infinite;
+	}
+
 	.bar__location {
 		font-size: var(--font-code-size);
 		font-weight: 700;
@@ -270,17 +125,73 @@ const {
 
 	.bar__social {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		gap: var(--space-sm);
+		gap: var(--space-md);
+	}
+
+	.social {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--primary-color);
 		font-size: 12px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
+		cursor: pointer;
+		transition: color var(--transition-surface);
+	}
+
+	.social__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		color: var(--outline-color);
+		transition: color var(--transition-surface);
+	}
+
+	.social__icon > svg {
+		display: block;
+	}
+
+	.social__label {
+		background-image: linear-gradient(currentColor, currentColor);
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 0% 1px;
+		transition: background-size var(--transition-underline);
+	}
+
+	.social__arrow {
+		flex-shrink: 0;
+		transition: transform var(--transition-press);
+	}
+
+	.social:hover,
+	.social:focus-visible {
+		color: var(--on-surface-variant-color);
+	}
+
+	.social:hover .social__icon,
+	.social:focus-visible .social__icon {
 		color: var(--primary-color);
 	}
 
-	.bar__sep {
-		color: var(--outline-variant-color);
+	.social:hover .social__label,
+	.social:focus-visible .social__label {
+		background-size: 100% 1px;
+	}
+
+	.social:hover .social__arrow,
+	.social:focus-visible .social__arrow {
+		transform: translate(1px, -1px);
+	}
+
+	.social:focus-visible {
+		outline: var(--border-heavy);
+		outline-offset: 2px;
 	}
 
 	.bar__copyright {
@@ -298,48 +209,7 @@ const {
 		}
 	}
 
-	@media (max-width: 1023px) {
-		.footer__main {
-			padding: var(--space-lg) var(--space-md);
-		}
-
-		.nav__link,
-		.social__link {
-			padding: var(--space-sm) 0;
-			min-height: 44px;
-		}
-
-		.nav__list > li + li,
-		.social__list > li + li {
-			border-top: var(--border-thin);
-		}
-
-		.status {
-			align-self: flex-start;
-		}
-	}
-
 	@media (min-width: 1024px) {
-		.footer__main {
-			display: grid;
-			grid-template-columns: 5fr 3fr 4fr;
-			gap: var(--gutter-desktop);
-			padding: 40px;
-		}
-
-		.cta {
-			padding: 12px 24px;
-		}
-
-		.nav__list,
-		.social__list {
-			gap: var(--space-sm);
-		}
-
-		.social__link {
-			border-bottom: 0;
-		}
-
 		.bar {
 			flex-direction: row;
 			align-items: center;
