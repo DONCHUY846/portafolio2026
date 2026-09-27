@@ -16,44 +16,63 @@ const {
 } = Astro.props;
 ---
 
-<section class="hero">
-
+<section class="hero" data-hero>
+	<canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
 
 	<div class="hero__body">
 		<div class="hero__masthead">
 			<h1 class="hero__name">
-				<span class="hero__given">{firstName}</span>
-				<span class="hero__card">
-					<Image
-						class="hero__photo"
-						src={avatar}
-						alt={avatarAlt}
-						widths={[240, 360, 480, 720]}
-						sizes="(min-width: 1024px) 360px, 240px"
-						quality={100}
-						format="webp"
-						loading="eager"
-						decoding="async"
-					/>
+				<span class="hero__given" data-hero-given>
+					<span class="hero__name-text" data-hero-name-text>{firstName}</span>
 				</span>
-				<span class="hero__family">{lastName}</span>
+				<span class="hero__card-wrap" data-hero-card-wrap>
+					<span class="hero__card" data-hero-card>
+						<Image
+							class="hero__photo"
+							src={avatar}
+							alt={avatarAlt}
+							widths={[240, 360, 480, 720]}
+							sizes="(min-width: 1024px) 360px, 240px"
+							quality={100}
+							format="webp"
+							loading="eager"
+							decoding="async"
+						/>
+						<span class="hero__glare" data-hero-glare aria-hidden="true"></span>
+					</span>
+				</span>
+				<span class="hero__family" data-hero-family>
+					<span class="hero__name-text" data-hero-name-text>{lastName}</span>
+				</span>
 			</h1>
 		</div>
 
-		<div class="hero__intro">
-			<p class="hero__role">{role}</p>
-			<p class="hero__tagline">{tagline}</p>
+		<div class="hero__intro" data-hero-intro>
+			<p class="hero__role" data-hero-role>{role}</p>
+			<p class="hero__tagline" data-hero-tagline>{tagline}</p>
 		</div>
 	</div>
 </section>
 
 <style>
 	.hero {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
 		min-height: 100svh;
+		overflow: hidden;
 		font-family: var(--label-font);
+	}
+
+	.hero__canvas {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		pointer-events: none;
 	}
 
 	.hero__rail {
@@ -96,6 +115,8 @@ const {
 	}
 
 	.hero__body {
+		position: relative;
+		z-index: 1;
 		display: flex;
 		flex: 1;
 		flex-direction: column;
@@ -121,6 +142,9 @@ const {
 	.hero__given,
 	.hero__family {
 		flex: 1;
+		overflow: hidden;
+		padding-block: 0.15em;
+		margin-block: -0.15em;
 		font-family: var(--headline-font);
 		font-weight: 700;
 		font-size: clamp(2.75rem, 7.5vw, 7.5rem);
@@ -131,6 +155,10 @@ const {
 		white-space: nowrap;
 	}
 
+	.split-char {
+		display: inline-block;
+	}
+
 	.hero__given {
 		text-align: right;
 	}
@@ -139,14 +167,34 @@ const {
 		text-align: left;
 	}
 
-	.hero__card {
+	.hero__card-wrap {
 		flex-shrink: 0;
 		width: clamp(200px, 26vw, 360px);
 		aspect-ratio: 4 / 5;
+	}
+
+	.hero__card {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
 		background-color: var(--surface-lowest-color);
 		border-radius: var(--radius-lg);
 		box-shadow: 0px 15px 20px var(--border-dark);
 		overflow: hidden;
+	}
+
+	.hero__glare {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		opacity: 0;
+		background: radial-gradient(
+			420px circle at var(--gx, 50%) var(--gy, 50%),
+			rgba(255, 255, 255, 0.38),
+			transparent 45%
+		);
 	}
 
 	.hero__photo {
@@ -243,9 +291,12 @@ const {
 			text-align: center;
 		}
 
-		.hero__card {
+		.hero__card-wrap {
 			width: 240px;
 			margin-block: var(--space-md);
+		}
+
+		.hero__card {
 			box-shadow: 4px 4px 0px var(--border-dark);
 		}
 
@@ -267,3 +318,175 @@ const {
 		}
 	}
 </style>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { SplitText } from 'gsap/SplitText';
+	import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+
+	gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
+
+	const hero = document.querySelector<HTMLElement>('[data-hero]');
+
+	if (hero) {
+		const card = hero.querySelector<HTMLElement>('[data-hero-card]');
+		const cardWrap = hero.querySelector<HTMLElement>('[data-hero-card-wrap]');
+		const glare = hero.querySelector<HTMLElement>('[data-hero-glare]');
+		const given = hero.querySelector<HTMLElement>('[data-hero-given]');
+		const family = hero.querySelector<HTMLElement>('[data-hero-family]');
+		const intro = hero.querySelector<HTMLElement>('[data-hero-intro]');
+		const roleEl = hero.querySelector<HTMLElement>('[data-hero-role]');
+		const taglineEl = hero.querySelector<HTMLElement>('[data-hero-tagline]');
+		const nameTexts = hero.querySelectorAll<HTMLElement>('[data-hero-name-text]');
+
+		const mm = gsap.matchMedia();
+
+		mm.add('(prefers-reduced-motion: no-preference)', () => {
+			if (!card || !roleEl || !taglineEl) return;
+
+			const nameSplits = Array.from(nameTexts).map(
+				(el) => new SplitText(el, { type: 'chars', charsClass: 'split-char' }),
+			);
+			const chars = nameSplits.flatMap((split) => Array.from(split.chars));
+			const taglineSplit = new SplitText(taglineEl, { type: 'words', wordsClass: 'split-word' });
+			const roleText = roleEl.textContent ?? '';
+
+			const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+
+			tl.fromTo(
+				card,
+				{ clipPath: 'inset(0 0 100% 0)', scale: 0.9, rotate: -2 },
+				{ clipPath: 'inset(0 0 0% 0)', scale: 1, rotate: 0, duration: 1.1 },
+				0,
+			);
+			tl.from(chars, { yPercent: 150, duration: 0.9, stagger: 0.03 }, 0.15);
+			tl.from(roleEl, { y: 8, opacity: 0, duration: 0.5, ease: 'power3.out' }, 0.5);
+			tl.to(
+				roleEl,
+				{
+					scrambleText: { text: roleText, chars: 'upperCase', speed: 0.35, revealDelay: 0.15 },
+					duration: 1.2,
+					ease: 'none',
+					onStart: () => {
+						roleEl.textContent = '';
+					},
+				},
+				0.55,
+			);
+			tl.from(
+				taglineSplit.words,
+				{ y: 16, opacity: 0, duration: 0.6, stagger: 0.015, ease: 'power3.out' },
+				0.7,
+			);
+
+			let started = false;
+			const play = () => {
+				if (started) return;
+				started = true;
+				tl.play();
+				ScrollTrigger.refresh();
+			};
+
+			if (document.fonts?.ready) document.fonts.ready.then(play).catch(play);
+			window.setTimeout(play, 1200);
+
+			return () => {
+				started = true;
+				tl.kill();
+				nameSplits.forEach((split) => split.revert());
+				taglineSplit.revert();
+			};
+		});
+
+		mm.add('(prefers-reduced-motion: no-preference) and (min-width: 1024px)', () => {
+			if (!given || !family || !cardWrap || !intro) return;
+
+			const tl = gsap.timeline({
+				defaults: { ease: 'none' },
+				scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 },
+			});
+
+			tl.to(given, { xPercent: -12 }, 0)
+				.to(family, { xPercent: 12 }, 0)
+				.to(cardWrap, { yPercent: 14, scale: 0.95, opacity: 0.6 }, 0)
+				.to(intro, { y: -60, opacity: 0.3 }, 0);
+		});
+
+		mm.add('(prefers-reduced-motion: no-preference) and (max-width: 1023px)', () => {
+			if (!given || !family || !cardWrap || !intro) return;
+
+			const tl = gsap.timeline({
+				defaults: { ease: 'none' },
+				scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 },
+			});
+
+			tl.to(given, { yPercent: -6 }, 0)
+				.to(family, { yPercent: 6 }, 0)
+				.to(cardWrap, { scale: 0.96, opacity: 0.6 }, 0)
+				.to(intro, { y: -30, opacity: 0.4 }, 0);
+		});
+
+		mm.add('(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)', () => {
+			if (!card || !glare) return;
+
+			gsap.set(card, { transformPerspective: 900 });
+
+			const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
+			const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
+			const moveX = gsap.quickTo(card, 'x', { duration: 0.5, ease: 'power3' });
+			const moveY = gsap.quickTo(card, 'y', { duration: 0.5, ease: 'power3' });
+			const glareO = gsap.quickTo(glare, 'opacity', { duration: 0.3, ease: 'power2' });
+
+			const onMove = (event: PointerEvent) => {
+				const rect = card.getBoundingClientRect();
+				const px = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+				const py = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+				rotY((px - 0.5) * 14);
+				rotX((0.5 - py) * 14);
+				moveX((px - 0.5) * 12);
+				moveY((py - 0.5) * 12);
+				glare.style.setProperty('--gx', `${px * 100}%`);
+				glare.style.setProperty('--gy', `${py * 100}%`);
+				glareO(1);
+			};
+
+			const onLeave = () => {
+				rotX(0);
+				rotY(0);
+				moveX(0);
+				moveY(0);
+				glareO(0);
+			};
+
+			card.addEventListener('pointermove', onMove);
+			card.addEventListener('pointerleave', onLeave);
+
+			return () => {
+				card.removeEventListener('pointermove', onMove);
+				card.removeEventListener('pointerleave', onLeave);
+				gsap.set(card, { clearProps: 'transform,perspective' });
+				gsap.set(glare, { clearProps: 'opacity' });
+				glare.style.removeProperty('--gx');
+				glare.style.removeProperty('--gy');
+			};
+		});
+
+		const canvas = hero.querySelector<HTMLCanvasElement>('[data-hero-canvas]');
+
+		const loadGrid = () => {
+			if (!canvas) return;
+			if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+			import('../scripts/hero-grid')
+				.then((module) => module.initHeroGrid(canvas))
+				.catch(() => {});
+		};
+
+		if (typeof window.requestIdleCallback === 'function') {
+			window.requestIdleCallback(loadGrid, { timeout: 2000 });
+		} else {
+			window.addEventListener('load', loadGrid, { once: true });
+		}
+	}
+</script>
+
