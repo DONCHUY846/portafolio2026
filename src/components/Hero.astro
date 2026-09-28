@@ -3,13 +3,10 @@ import { Image } from 'astro:assets';
 import avatar from '../assets/avatar-frente.jpg';
 
 const {
-	brand = '[ JA ] // DEV',
 	firstName = 'JESÚS',
 	lastName = 'AVIÑA',
 	role = 'FRONTEND ARCHITECT',
 	tagline = 'I build design systems, component libraries, and fast interfaces that stay maintainable as they scale.',
-	location = 'MÉXICO / LATAM',
-	timezone = 'GMT-6',
 	primaryCta = { label: 'VER PROYECTOS', href: '#proyectos' },
 	secondaryCta = { label: 'CONTACTO', href: '#contacto' },
 	avatarAlt = 'Retrato de Jesús Aviña Alcalá',
@@ -51,6 +48,14 @@ const {
 			<p class="hero__role" data-hero-role>{role}</p>
 			<p class="hero__tagline" data-hero-tagline>{tagline}</p>
 		</div>
+
+		<div class="hero__actions" data-hero-actions>
+			<a class="btn btn-primary hero__cta" href={primaryCta.href}>
+				<span>{primaryCta.label}</span>
+				<span class="hero__arrow" aria-hidden="true">↗</span>
+			</a>
+			<a class="btn btn-secondary hero__cta" href={secondaryCta.href}>{secondaryCta.label}</a>
+		</div>
 	</div>
 </section>
 
@@ -73,45 +78,6 @@ const {
 		height: 100%;
 		max-width: none;
 		pointer-events: none;
-	}
-
-	.hero__rail {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-md);
-		padding: 12px var(--gutter);
-		border-bottom: var(--border-thin);
-	}
-
-	.hero__brand {
-		font-size: 10px;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--primary-color);
-		white-space: nowrap;
-	}
-
-	.hero__place {
-		display: flex;
-		align-items: center;
-		gap: var(--space-sm);
-	}
-
-	.hero__dot {
-		width: 8px;
-		height: 8px;
-		flex-shrink: 0;
-		border-radius: var(--radius-full);
-		background-color: var(--status-available);
-		animation: hero-pulse 2s ease-in-out infinite;
-	}
-
-	.hero__timezone {
-		font-size: 10px;
-		color: var(--outline-color);
-		white-space: nowrap;
 	}
 
 	.hero__body {
@@ -241,29 +207,11 @@ const {
 	}
 
 	.hero__cta {
-		font-family: var(--label-font);
-		font-size: var(--font-code-size);
-		font-weight: 700;
-		letter-spacing: 0.08em;
 		cursor: pointer;
-	}
-
-	.btn-secondary:hover {
-		box-shadow: var(--shadow-sm);
 	}
 
 	.hero__arrow {
 		font-size: var(--font-body-sm-size);
-	}
-
-	@keyframes hero-pulse {
-		0%,
-		100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.35;
-		}
 	}
 
 	@media (max-width: 1023px) {
@@ -336,6 +284,7 @@ const {
 		const given = hero.querySelector<HTMLElement>('[data-hero-given]');
 		const family = hero.querySelector<HTMLElement>('[data-hero-family]');
 		const intro = hero.querySelector<HTMLElement>('[data-hero-intro]');
+		const actions = hero.querySelector<HTMLElement>('[data-hero-actions]');
 		const roleEl = hero.querySelector<HTMLElement>('[data-hero-role]');
 		const taglineEl = hero.querySelector<HTMLElement>('[data-hero-tagline]');
 		const nameTexts = hero.querySelectorAll<HTMLElement>('[data-hero-name-text]');
@@ -379,6 +328,9 @@ const {
 				{ y: 16, opacity: 0, duration: 0.6, stagger: 0.015, ease: 'power3.out' },
 				0.7,
 			);
+			if (actions) {
+				tl.from(actions, { y: 12, opacity: 0, duration: 0.5, ease: 'power3.out' }, 0.95);
+			}
 
 			let started = false;
 			const play = () => {
