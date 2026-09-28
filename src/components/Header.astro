@@ -102,6 +102,23 @@ const {
 </header>
 
 <style>
+	.header--dark {
+		--background-color: #111111;
+		--surface-lowest-color: #1f1f1f;
+		--surface-container-low-color: #1c1c1c;
+		--surface-inset-color: #151515;
+		--primary-color: #fbf9f3;
+		--neutral-color: #111111;
+		--on-surface-variant-color: #a0a0a0;
+		--outline-color: #4f4f4f;
+		--status-available: #22c55e;
+		--border-dark: #333333;
+		--border-thin: 1px solid var(--border-dark);
+		--border-heavy: 2px solid var(--border-dark);
+		--shadow-sm: 2px 2px 0px #000000;
+		--shadow-md: 3px 3px 0px #000000;
+	}
+
 	.header {
 		position: sticky;
 		top: 0;
@@ -110,6 +127,10 @@ const {
 		background-color: var(--background-color);
 		border-bottom: var(--border-heavy);
 		font-family: var(--label-font);
+		transition:
+			background-color var(--transition-surface),
+			border-color var(--transition-surface),
+			color var(--transition-surface);
 	}
 
 	.header__bar {
@@ -443,6 +464,33 @@ const {
 	const header = document.querySelector<HTMLElement>('[data-header]');
 	const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
 	const panel = header?.querySelector<HTMLElement>('[data-menu-panel]');
+
+	/*
+	 * Las secciones oscuras de la página (ver `data-header-invert` en SobreMi.astro)
+	 * invierten los tokens del header mientras pasan por debajo de la barra sticky.
+	 */
+	const invertTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-header-invert]'));
+
+	if (header && invertTargets.length > 0) {
+		let frame = 0;
+
+		const syncInverted = () => {
+			frame = 0;
+			const threshold = header.offsetHeight;
+			const inverted = invertTargets.some(
+				(target) => target.getBoundingClientRect().top < threshold,
+			);
+			header.classList.toggle('header--dark', inverted);
+		};
+
+		const requestSync = () => {
+			if (frame === 0) frame = requestAnimationFrame(syncInverted);
+		};
+
+		syncInverted();
+		window.addEventListener('scroll', requestSync, { passive: true });
+		window.addEventListener('resize', requestSync, { passive: true });
+	}
 
 	const setOpen = (open: boolean) => {
 		if (!toggle || !panel) return;

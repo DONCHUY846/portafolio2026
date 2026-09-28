@@ -1,0 +1,1143 @@
+---
+import { Image } from 'astro:assets';
+import { MapPin, CodeXml, GraduationCap, Gauge, Download, Terminal } from '@lucide/astro/icons';
+import avatar from '../assets/sentado-avatar.jpg';
+import { about as defaultAbout, type AboutSection, type AboutVariant } from '../data/about';
+
+const {
+	section = defaultAbout,
+	variant = 'dark',
+} = Astro.props as {
+	section?: AboutSection;
+	variant?: AboutVariant;
+};
+
+const specIcons = {
+	'map-pin': MapPin,
+	'code-xml': CodeXml,
+	'graduation-cap': GraduationCap,
+	gauge: Gauge,
+};
+
+const isExternal = (href: string) => href.startsWith('http');
+---
+
+<section
+	class:list={['about', `about--${variant}`]}
+	id="sobre-mi"
+	data-about-root
+	data-header-invert={variant === 'dark' ? '' : undefined}
+	aria-labelledby="sobre-mi-title"
+>
+	<div class="about__frame">
+		<header class="dossier" data-about-intro>
+			<div class="dossier__main">
+				<p class="dossier__tag">
+					<span class="dossier__square" aria-hidden="true"></span>
+					{section.meta.tag}
+					<span aria-hidden="true">//</span>
+					<span class="dossier__ref">{section.meta.ref}</span>
+				</p>
+				<h2 class="dossier__title" id="sobre-mi-title" data-about-title>
+					{section.sectionNumber} // {section.sectionTitle}
+				</h2>
+			</div>
+
+			<p class="dossier__badge" data-about-badge>[ {section.meta.badge} ]</p>
+		</header>
+
+		<div class="about__grid">
+			<div class="about__col about__col--main">
+				<article class="panel panel--bio" data-about-block>
+					<div class="panel__head">
+						<p class="panel__headline">
+							<span class="panel__dot" aria-hidden="true"></span>
+							{section.profile.cardTitle}
+						</p>
+						<span class="panel__status" data-about-status>{section.profile.status}</span>
+					</div>
+
+					<p class="bio__lead">
+						{section.profile.lead.before}<strong class="bio__highlight"
+							>{section.profile.lead.highlight}</strong
+						>{section.profile.lead.after}
+					</p>
+
+					<p class="bio__body">{section.profile.body}</p>
+
+					<dl class="facts">
+						{
+							section.profile.facts.map((fact) => (
+								<div class="facts__item">
+									<dt class="facts__label">{fact.label}</dt>
+									<dd class:list={['facts__value', { 'facts__value--accent': fact.accent }]}>
+										{fact.value}
+									</dd>
+								</div>
+							))
+						}
+					</dl>
+				</article>
+
+				<section class="pillars" aria-labelledby="sobre-mi-pillars-title">
+					<div class="pillars__head">
+						<h3 class="pillars__title" id="sobre-mi-pillars-title" data-about-subtitle>
+							{section.pillarsTitle}
+						</h3>
+						<span class="pillars__rule" aria-hidden="true"></span>
+					</div>
+
+					<ul class="pillars__list">
+						{
+							section.pillars.map((pillar) => (
+								<li class="pillar">
+									<span class="pillar__num" aria-hidden="true">
+										{pillar.num}
+									</span>
+									<div class="pillar__body">
+										<div class="pillar__head">
+											<h4 class="pillar__title">{pillar.title}</h4>
+											<span class="pillar__metric">{pillar.metric}</span>
+										</div>
+										<p class="pillar__desc">{pillar.description}</p>
+									</div>
+								</li>
+							))
+						}
+					</ul>
+				</section>
+
+				<section class="panel panel--stack" aria-labelledby="sobre-mi-stack-title">
+					<div class="panel__head">
+						<h3 class="panel__headline" id="sobre-mi-stack-title">{section.stackTitle}</h3>
+						<span class="panel__note">{section.stackNote}</span>
+					</div>
+
+					<ul class="stack">
+						{
+							section.stack.map((item) => (
+								<li class="stack__chip">{item.label}</li>
+							))
+						}
+					</ul>
+				</section>
+			</div>
+
+			<div class="about__col about__col--aside">
+				<div class="card" data-about-block>
+					<div class="card__window">
+						<span class="card__dots" aria-hidden="true">
+							<span class="card__dot card__dot--close"></span>
+							<span class="card__dot card__dot--min"></span>
+							<span class="card__dot card__dot--max"></span>
+						</span>
+						<span class="card__window-title">{section.card.windowTitle}</span>
+						<Terminal class="card__window-icon" size={16} aria-hidden="true" />
+					</div>
+
+					<div class="card__stage">
+						<figure class="card__frame" data-about-avatar>
+							<Image
+								class="card__photo"
+								src={avatar}
+								alt={section.card.avatarAlt}
+								widths={[240, 360, 480]}
+								sizes="(min-width: 1024px) 240px, 208px"
+								quality={100}
+								loading="lazy"
+								decoding="async"
+							/>
+							<figcaption class="card__caption">{section.card.avatarCaption}</figcaption>
+						</figure>
+					</div>
+
+					<dl class="specs">
+						{
+							section.card.specs.map((spec) => {
+								const Icon = specIcons[spec.icon];
+								return (
+									<div class="specs__row">
+										<dt class="specs__label">{spec.label}</dt>
+										<dd class="specs__value">
+											{Icon && (
+												<Icon
+													class:list={['specs__icon', { 'specs__icon--accent': spec.accent }]}
+													size={16}
+													aria-hidden="true"
+												/>
+											)}
+											{spec.value}
+										</dd>
+									</div>
+								);
+							})
+						}
+					</dl>
+
+					<div class="telemetry">
+						<p class="telemetry__head">
+							<span class="telemetry__label">{section.card.telemetry.label}</span>
+							<span class="telemetry__value">
+								<span class="telemetry__pulse" aria-hidden="true"></span>
+								{section.card.telemetry.value}
+							</span>
+						</p>
+
+						<div class="telemetry__track" data-about-sparkline>
+							<svg
+								viewBox="0 0 200 30"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+								focusable="false"
+							>
+								<path d={section.card.sparkline} vector-effect="non-scaling-stroke"></path>
+								<circle cx="200" cy="5" r="3"></circle>
+							</svg>
+						</div>
+					</div>
+				</div>
+
+				<div class="actions" data-about-block>
+					{
+						section.actions.map((action) => (
+							<a
+								class:list={['action', `action--${action.variant}`]}
+								href={action.href}
+								target={isExternal(action.href) ? '_blank' : undefined}
+								rel={isExternal(action.href) ? 'noopener noreferrer' : undefined}
+							>
+								{action.icon === 'download' && <Download size={18} aria-hidden="true" />}
+								<span class="action__label">{action.label}</span>
+								<span class="action__glyph" aria-hidden="true">
+									{action.variant === 'primary' ? '↓' : '→'}
+								</span>
+							</a>
+						))
+					}
+				</div>
+
+				<blockquote class="note" data-about-block>
+					<span class="note__mark" aria-hidden="true">“</span>
+					<p class="note__text">{section.note}</p>
+				</blockquote>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.about {
+		scroll-margin-top: 96px;
+		padding-block: var(--space-xl) calc(var(--space-xl) * 2);
+		background-color: var(--background-color);
+		color: var(--on-background-color);
+
+		--accent-color: #16a34a;
+		--accent-pulse: #10b981;
+		--hairline-color: rgba(17, 17, 17, 0.3);
+		--border-ink: var(--border-dark);
+		--stage-color: var(--surface-container-color);
+		--chip-color: var(--surface-card-color);
+		--status-color: var(--on-surface-variant-color);
+		--spec-icon-color: var(--on-surface-color);
+		--sparkline-color: var(--primary-color);
+	}
+
+	.about--dark {
+		--background-color: #111111;
+		--surface-color: #181818;
+		--surface-card-color: #181818;
+		--surface-container-color: #181818;
+		--surface-container-high-color: #222222;
+		--surface-inset-color: #151515;
+		--surface-lowest-color: #141414;
+		--surface-variant-color: #222222;
+		--surface-bright-color: #181818;
+
+		--on-background-color: #fbf9f3;
+		--on-surface-color: #fbf9f3;
+		--on-surface-variant-color: #a0a0a0;
+
+		--primary-color: #fbf9f3;
+		--secondary-color: #a0a0a0;
+		--neutral-color: #111111;
+		--on-primary-color: #111111;
+
+		--code-surface-color: #141414;
+		--code-text-color: #e6e5df;
+
+		--outline-color: #4f4f4f;
+		--outline-variant-color: #2e2e2e;
+		--border-dark: #333333;
+		--border-subtle: rgba(251, 249, 243, 0.24);
+
+		--border-thin: 1px solid var(--border-dark);
+		--border-thick: 1.5px solid var(--border-dark);
+		--border-heavy: 2px solid var(--border-dark);
+
+		--shadow-sm: 2px 2px 0px #000000;
+		--shadow-md: 3px 3px 0px #000000;
+		--shadow-lg: 4px 4px 0px #000000;
+
+		--accent-color: #22c55e;
+		--accent-pulse: #22c55e;
+		--hairline-color: #2e2e2e;
+		--border-ink: #000000;
+		--stage-color: #1d1d1d;
+		--chip-color: var(--surface-variant-color);
+		--status-color: var(--accent-color);
+		--spec-icon-color: var(--accent-color);
+		--sparkline-color: var(--accent-color);
+	}
+
+	.about__frame {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		max-width: 1200px;
+		margin-inline: auto;
+		padding-inline: var(--margin-page);
+	}
+
+	.dossier {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-md);
+		padding-bottom: var(--space-lg);
+		border-bottom: var(--border-heavy);
+	}
+
+	.dossier__main {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+	}
+
+	.dossier__tag {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 6px;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--secondary-color);
+		text-transform: uppercase;
+	}
+
+	.dossier__square {
+		width: 10px;
+		height: 10px;
+		flex-shrink: 0;
+		background-color: var(--primary-color);
+	}
+
+	.dossier__ref {
+		color: var(--on-surface-variant-color);
+	}
+
+	.dossier__title {
+		overflow: hidden;
+		padding-block: 0.06em;
+		font-size: clamp(2.75rem, 5.5vw, var(--font-headline-display-size));
+		line-height: 1.05;
+		letter-spacing: 0.02em;
+	}
+
+	.split-char {
+		display: inline-block;
+	}
+
+	.dossier__badge {
+		align-self: flex-start;
+		padding: 6px 10px;
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		box-shadow: var(--shadow-sm);
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.1em;
+		color: var(--primary-color);
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.about__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-xl);
+		align-items: start;
+	}
+
+	.about__col {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		min-width: 0;
+	}
+
+	.panel {
+		padding: var(--space-lg);
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.panel--stack {
+		padding: var(--space-md);
+		background-color: var(--surface-inset-color);
+		box-shadow: var(--shadow-md);
+	}
+
+	.panel__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+		padding-bottom: var(--space-sm);
+		border-bottom: 1px solid var(--hairline-color);
+	}
+
+	.panel__headline {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+	}
+
+	.panel__dot {
+		width: 10px;
+		height: 10px;
+		flex-shrink: 0;
+		border-radius: var(--radius-full);
+		background-color: var(--primary-color);
+	}
+
+	.panel__status {
+		flex-shrink: 0;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		line-height: 18px;
+		color: var(--status-color);
+		text-transform: uppercase;
+	}
+
+	.panel__note {
+		flex-shrink: 0;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		line-height: 18px;
+		color: var(--on-surface-variant-color);
+		text-transform: uppercase;
+	}
+
+	.bio__lead {
+		margin-bottom: var(--space-md);
+		font-size: var(--font-body-lg-size);
+		font-weight: 500;
+		line-height: 1.6;
+		color: var(--on-surface-color);
+	}
+
+	.bio__highlight {
+		font-weight: 600;
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+	}
+
+	.bio__body {
+		color: var(--on-surface-variant-color);
+	}
+
+	.facts {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-sm);
+		margin-top: var(--space-md);
+		padding-top: var(--space-md);
+		border-top: 1px solid var(--hairline-color);
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+	}
+
+	.facts__item {
+		min-width: 0;
+	}
+
+	.facts__item:nth-child(3) {
+		grid-column: 1 / -1;
+	}
+
+	.facts__label {
+		display: block;
+		font-size: 11px;
+		letter-spacing: 0.04em;
+		color: var(--on-surface-variant-color);
+		text-transform: uppercase;
+	}
+
+	.facts__value {
+		margin: 0;
+		font-weight: 600;
+		color: var(--on-surface-color);
+	}
+
+	.facts__value--accent {
+		color: var(--accent-color);
+	}
+
+	.pillars {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.pillars__head {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.pillars__title {
+		flex-shrink: 0;
+		font-family: var(--label-font);
+		font-size: var(--font-label-size);
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.1em;
+		color: var(--on-surface-variant-color);
+	}
+
+	.pillars__rule {
+		flex: 1;
+		height: 2px;
+		background-color: var(--border-dark);
+		opacity: 0.4;
+	}
+
+	.pillars__list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.pillar {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-md);
+		padding: var(--space-md);
+		background-color: var(--surface-container-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-md);
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press),
+			border-color var(--transition-surface);
+	}
+
+	.pillar:hover {
+		transform: translate(-2px, -2px);
+		box-shadow: var(--shadow-lg);
+		border-color: var(--outline-color);
+	}
+
+	.pillar__num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		flex-shrink: 0;
+		background-color: var(--primary-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-lg);
+		color: var(--on-primary-color);
+		font-family: var(--headline-font);
+		font-size: var(--font-headline-md-size);
+		font-weight: 700;
+	}
+
+	.pillar__body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.pillar__head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		margin-bottom: 4px;
+	}
+
+	.pillar__title {
+		font-size: var(--font-headline-sm-size);
+		line-height: 26px;
+		color: var(--on-surface-color);
+	}
+
+	.pillar__metric {
+		display: none;
+		flex-shrink: 0;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		line-height: 18px;
+		color: var(--on-surface-variant-color);
+		text-transform: uppercase;
+	}
+
+	.pillar__desc {
+		font-size: var(--font-body-sm-size);
+		color: var(--on-surface-variant-color);
+	}
+
+	.stack {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.stack__chip {
+		display: inline-flex;
+		align-items: center;
+		padding: 4px 12px;
+		background-color: var(--chip-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-base);
+		box-shadow: var(--shadow-sm);
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 600;
+		line-height: 18px;
+		color: var(--on-surface-color);
+	}
+
+	.card {
+		overflow: hidden;
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-xl);
+		box-shadow: 6px 6px 0px var(--border-ink);
+	}
+
+	.card__window {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		padding: var(--space-sm) var(--space-md);
+		background-color: var(--code-surface-color);
+		border-bottom: var(--border-heavy);
+		color: var(--code-text-color);
+	}
+
+	.card__dots {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.card__dot {
+		width: 12px;
+		height: 12px;
+		border: 1px solid var(--border-dark);
+		border-radius: var(--radius-full);
+	}
+
+	.card__dot--close {
+		background-color: #ff5f56;
+	}
+
+	.card__dot--min {
+		background-color: #ffbd2e;
+	}
+
+	.card__dot--max {
+		background-color: #27c93f;
+	}
+
+	.card__window-title {
+		overflow: hidden;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-overflow: ellipsis;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.card__window-icon {
+		flex-shrink: 0;
+	}
+
+	.card__stage {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: var(--space-md);
+		background-color: var(--stage-color);
+		border-bottom: var(--border-heavy);
+	}
+
+	.card__frame {
+		position: relative;
+		width: 208px;
+		height: 208px;
+		overflow: hidden;
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.card__photo {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1) contrast(1.25);
+		transition:
+			filter var(--transition-surface),
+			transform 300ms var(--transition-surface);
+	}
+
+	.card__frame:hover .card__photo {
+		filter: grayscale(0);
+		transform: scale(1.05);
+	}
+
+	.card__caption {
+		position: absolute;
+		inset: auto 8px 8px;
+		padding: 4px 8px;
+		background-color: var(--code-surface-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-base);
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.06em;
+		color: var(--code-text-color);
+		text-align: center;
+		text-transform: uppercase;
+	}
+
+	.specs {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		background-color: var(--surface-card-color);
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+	}
+
+	.specs__row {
+		padding-bottom: 8px;
+		border-bottom: 1px solid var(--hairline-color);
+	}
+
+	.specs__row:last-child {
+		padding-bottom: 0;
+		border-bottom: 0;
+	}
+
+	.specs__label {
+		font-size: 11px;
+		letter-spacing: 0.04em;
+		color: var(--on-surface-variant-color);
+		text-transform: uppercase;
+	}
+
+	.specs__value {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin: 0;
+		font-weight: 600;
+		line-height: 20px;
+		color: var(--on-surface-color);
+	}
+
+	.specs__icon {
+		flex-shrink: 0;
+		color: var(--on-surface-color);
+	}
+
+	.specs__icon--accent {
+		color: var(--spec-icon-color);
+	}
+
+	.telemetry {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: var(--space-md);
+		background-color: var(--surface-inset-color);
+		border-top: var(--border-heavy);
+		font-family: var(--label-font);
+	}
+
+	.telemetry__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 4px 12px;
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+	}
+
+	.telemetry__label {
+		color: var(--on-surface-variant-color);
+		text-transform: uppercase;
+	}
+
+	.telemetry__value {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--accent-color);
+		text-transform: uppercase;
+	}
+
+	.telemetry__pulse {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		border-radius: var(--radius-full);
+		background-color: var(--accent-pulse);
+		animation: telemetry-pulse 2s ease-in-out infinite;
+	}
+
+	.telemetry__track {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		height: 40px;
+		padding-inline: 8px;
+		background-color: var(--background-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-base);
+	}
+
+	.telemetry__track svg {
+		width: 100%;
+		height: 24px;
+		color: var(--sparkline-color);
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+	}
+
+	.telemetry__track circle {
+		fill: currentColor;
+		stroke: none;
+	}
+
+	.actions {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-sm);
+	}
+
+	.action {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 14px var(--space-md);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-lg);
+		font-family: var(--headline-font);
+		font-size: var(--font-label-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.08em;
+		text-align: center;
+		text-transform: uppercase;
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press),
+			background-color var(--transition-surface);
+	}
+
+	.action--primary {
+		background-color: var(--primary-color);
+		color: var(--on-primary-color);
+	}
+
+	.action--secondary {
+		background-color: var(--surface-card-color);
+		color: var(--on-surface-color);
+	}
+
+	.action:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: 6px 6px 0px var(--border-ink);
+	}
+
+	.action:active {
+		transform: translate(2px, 2px);
+		box-shadow: 0 0 0 0 var(--border-ink);
+	}
+
+	.action__label {
+		min-width: 0;
+	}
+
+	.action__glyph {
+		font-size: var(--font-body-sm-size);
+	}
+
+	.note {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		background-color: var(--background-color);
+		border: 2px dashed var(--border-dark);
+		border-radius: var(--radius-lg);
+	}
+
+	.note__mark {
+		flex-shrink: 0;
+		font-family: var(--headline-font);
+		font-size: var(--font-headline-sm-size);
+		line-height: 1;
+		color: var(--on-surface-color);
+	}
+
+	.note__text {
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		font-style: italic;
+		color: var(--on-surface-variant-color);
+	}
+
+	@keyframes telemetry-pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.35;
+		}
+	}
+
+	@media (min-width: 640px) {
+		.pillar__metric {
+			display: block;
+		}
+
+		.facts {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.facts__item:nth-child(3) {
+			grid-column: auto;
+		}
+
+		.actions {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.about__frame {
+			padding-inline: var(--margin-page-desktop);
+		}
+
+		.dossier {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+		}
+
+		.dossier__badge {
+			align-self: auto;
+		}
+
+		.about__grid {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		}
+
+		.about__col--aside {
+			position: sticky;
+			top: 7rem;
+			gap: var(--space-lg);
+		}
+
+		.card__frame {
+			width: 240px;
+			height: 240px;
+		}
+
+		.actions {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { SplitText } from 'gsap/SplitText';
+	import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
+
+	const root = document.querySelector<HTMLElement>('[data-about-root]');
+
+	if (root) {
+		const title = root.querySelector<HTMLElement>('[data-about-title]');
+		const subtitle = root.querySelector<HTMLElement>('[data-about-subtitle]');
+		const badge = root.querySelector<HTMLElement>('[data-about-badge]');
+		const status = root.querySelector<HTMLElement>('[data-about-status]');
+		const avatar = root.querySelector<HTMLElement>('[data-about-avatar]');
+		const sparkline = root.querySelector<SVGPathElement>('[data-about-sparkline] svg path');
+		const blocks = Array.from(root.querySelectorAll<HTMLElement>('[data-about-block]'));
+		const pillars = Array.from(root.querySelectorAll<HTMLElement>('.pillar'));
+		const chips = Array.from(root.querySelectorAll<HTMLElement>('.stack__chip'));
+
+		const mm = gsap.matchMedia();
+
+		mm.add('(prefers-reduced-motion: no-preference)', () => {
+			const titleSplit = title ? new SplitText(title, { type: 'chars', charsClass: 'split-char' }) : null;
+			const badgeText = badge?.textContent ?? '';
+			const statusText = status?.textContent ?? '';
+
+			const introTl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+			if (titleSplit) {
+				introTl.from(titleSplit.chars, { yPercent: 120, duration: 0.9, stagger: 0.02 }, 0.1);
+			}
+			if (subtitle) {
+				introTl.from(subtitle, { y: 10, opacity: 0, duration: 0.5, ease: 'power3.out' }, 0.3);
+			}
+			if (badge) {
+				introTl.to(
+					badge,
+					{
+						scrambleText: {
+							text: badgeText,
+							chars: 'upperCase',
+							speed: 0.3,
+							revealDelay: 0.1,
+						},
+						duration: 1,
+						ease: 'none',
+						onStart: () => {
+							badge.textContent = '';
+						},
+					},
+					0.2,
+				);
+			}
+			if (status) {
+				introTl.to(
+					status,
+					{
+						scrambleText: {
+							text: statusText,
+							chars: 'upperCase',
+							speed: 0.2,
+							revealDelay: 0.05,
+						},
+						duration: 0.8,
+						ease: 'none',
+						onStart: () => {
+							status.textContent = '';
+						},
+					},
+					0.55,
+				);
+			}
+
+			gsap.set([...pillars, ...chips, avatar], { y: 24, autoAlpha: 0 });
+
+			ScrollTrigger.batch([...pillars, avatar], {
+				start: 'top 90%',
+				onEnter: (batch) => {
+					gsap.to(batch, {
+						y: 0,
+						autoAlpha: 1,
+						duration: 0.7,
+						stagger: 0.09,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					});
+				},
+			});
+
+			ScrollTrigger.batch(chips, {
+				start: 'top 94%',
+				onEnter: (batch) => {
+					gsap.to(batch, {
+						y: 0,
+						autoAlpha: 1,
+						duration: 0.5,
+						stagger: 0.04,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					});
+				},
+			});
+
+			if (sparkline) {
+				const length = sparkline.getTotalLength();
+				gsap.set(sparkline, { strokeDasharray: length, strokeDashoffset: length });
+
+				ScrollTrigger.create({
+					trigger: sparkline,
+					start: 'top 95%',
+					once: true,
+					onEnter: () => {
+						gsap.to(sparkline, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' });
+					},
+				});
+			}
+
+			blocks.forEach((block) => {
+				gsap.from(block, {
+					scrollTrigger: {
+						trigger: block,
+						start: 'top 96%',
+						once: true,
+					},
+					y: 20,
+					autoAlpha: 0,
+					duration: 0.7,
+					ease: 'power3.out',
+				});
+			});
+
+			return () => {
+				titleSplit?.revert();
+				gsap.set([...pillars, ...chips, ...blocks, avatar], {
+					clearProps: 'opacity,visibility,transform',
+				});
+			};
+		});
+	}
+</script>
