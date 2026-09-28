@@ -1,0 +1,223 @@
+---
+import type { CodeTone, ProjectCodePanel } from '../data/projects';
+
+const { panel } = Astro.props as { panel: ProjectCodePanel };
+
+const tone = (value?: CodeTone) => (value ? `panel__tone--${value}` : undefined);
+---
+
+<div class="panel">
+	<div class="panel__head">
+		<span class="panel__title">{panel.title}</span>
+		<span class="panel__meta">{panel.meta}</span>
+	</div>
+
+	{
+		panel.kind === 'rows' && (
+			<ul class="panel__rows">
+				{panel.rows.map((row) => (
+					<li
+						class:list={[
+							'panel__row',
+							{ 'panel__row--indent': row.indent, 'panel__row--divider': row.divider },
+						]}
+					>
+						{row.marker && <span class:list={['panel__marker', tone(row.tone)]}>{row.marker}</span>}
+						<span class:list={['panel__label', tone(row.tone)]}>{row.label}</span>
+						{row.detail && (
+							<span class:list={['panel__detail', tone(row.detailTone)]}>{row.detail}</span>
+						)}
+					</li>
+				))}
+			</ul>
+		)
+	}
+
+	{
+		panel.kind === 'telemetry' && (
+			<div class="panel__stream">
+				<div class="panel__ticker">
+					<span class="panel__tick-key">{panel.ticker.key}</span>
+					<span class="panel__tick-value">{panel.ticker.value}</span>
+					<span class="panel__tick-delta">{panel.ticker.delta}</span>
+				</div>
+
+				<svg
+					class="panel__sparkline"
+					viewBox="0 0 300 32"
+					preserveAspectRatio="none"
+					aria-hidden="true"
+					focusable="false"
+				>
+					<path d={panel.sparkline} vector-effect="non-scaling-stroke" />
+				</svg>
+
+				<div class="panel__footers">
+					{panel.footers.map((footer) => (
+						<span>{footer}</span>
+					))}
+				</div>
+			</div>
+		)
+	}
+</div>
+
+<style>
+	.panel {
+		--term-emerald: #34d399;
+		--term-sky: #38bdf8;
+		--term-amber: #fbbf24;
+		--term-purple: #c084fc;
+		--term-teal: #2dd4bf;
+		--term-strong: var(--code-text-color);
+		--term-muted: #9b9a94;
+		--term-hairline: rgba(230, 229, 223, 0.24);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		background-color: var(--code-surface-color);
+		border: var(--border-thick);
+		color: var(--code-text-color);
+		font-family: var(--label-font);
+		font-size: 12px;
+		line-height: 18px;
+		letter-spacing: 0.01em;
+	}
+
+	.panel__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		padding-bottom: 8px;
+		border-bottom: 1px solid var(--term-hairline);
+		color: var(--term-muted);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+	}
+
+	.panel__title,
+	.panel__meta {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.panel__rows,
+	.panel__stream {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.panel__row {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	.panel__row--indent {
+		padding-left: 12px;
+		border-left: 2px solid var(--term-hairline);
+	}
+
+	.panel__row--divider {
+		margin-top: 4px;
+		padding-top: 6px;
+		border-top: 1px solid var(--term-hairline);
+	}
+
+	.panel__marker {
+		flex-shrink: 0;
+		font-weight: 500;
+	}
+
+	.panel__label {
+		min-width: 0;
+		overflow-wrap: anywhere;
+		color: var(--term-strong);
+	}
+
+	.panel__detail {
+		margin-left: auto;
+		padding-left: 8px;
+		color: var(--term-muted);
+		font-size: 11px;
+		text-align: right;
+	}
+
+	.panel__ticker {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 8px;
+		font-size: 11px;
+	}
+
+	.panel__tick-key {
+		font-weight: 700;
+		color: var(--term-emerald);
+	}
+
+	.panel__tick-value {
+		margin-left: auto;
+		font-weight: 600;
+	}
+
+	.panel__tick-delta {
+		color: var(--term-emerald);
+	}
+
+	.panel__sparkline {
+		display: block;
+		width: 100%;
+		height: 32px;
+		color: var(--term-emerald);
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+	}
+
+	.panel__footers {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 4px 12px;
+		padding-top: 6px;
+		border-top: 1px solid var(--term-hairline);
+		color: var(--term-muted);
+		font-size: 10px;
+	}
+
+	.panel__tone--emerald {
+		color: var(--term-emerald);
+	}
+
+	.panel__tone--sky {
+		color: var(--term-sky);
+	}
+
+	.panel__tone--amber {
+		color: var(--term-amber);
+	}
+
+	.panel__tone--purple {
+		color: var(--term-purple);
+	}
+
+	.panel__tone--teal {
+		color: var(--term-teal);
+	}
+
+	.panel__tone--strong {
+		color: var(--term-strong);
+		font-weight: 700;
+	}
+
+	.panel__tone--muted {
+		color: var(--term-muted);
+	}
+</style>

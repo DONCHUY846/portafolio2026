@@ -1,0 +1,441 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import {
+	projectFilters,
+	projects as defaultProjects,
+	type Project,
+	type ProjectFilter,
+} from '../data/projects';
+
+const {
+	sectionNumber = '01',
+	sectionTitle = 'Proyectos Seleccionados',
+	lead = 'Arquitecturas web de alto impacto, rendimiento de renderizado en React 19 y sistemas orientados a escalabilidad, accesibilidad y máxima mantenibilidad técnica.',
+	archive = 'PROYECTOS_DEPLOYED',
+	badge = 'PROD_READY',
+	badgeNote = '04 CASOS DE ESTUDIO',
+	projects = defaultProjects,
+	filters = projectFilters,
+} = Astro.props as {
+	sectionNumber?: string;
+	sectionTitle?: string;
+	lead?: string;
+	archive?: string;
+	badge?: string;
+	badgeNote?: string;
+	projects?: Project[];
+	filters?: ProjectFilter[];
+};
+
+const countLabel = String(projects.length).padStart(2, '0');
+
+const filterItems = filters.map((filter) => ({
+	...filter,
+	text: `[ ${filter.label}${filter.id === 'all' ? ` (${countLabel})` : ''} ]`,
+}));
+---
+
+<section class="projects" id="proyectos" data-projects aria-labelledby="proyectos-title">
+	<div class="projects__frame">
+		<header class="dossier" data-dossier>
+			<div class="dossier__meta">
+				<p class="dossier__tag">
+					<span class="dossier__square" aria-hidden="true"></span>
+					Dossier Técnico
+					<span aria-hidden="true">//</span>
+					<span class="dossier__file">Archivo: {archive}</span>
+				</p>
+				<p class="dossier__badge" data-dossier-badge>[ {badge} // {badgeNote} ]</p>
+			</div>
+
+			<div class="dossier__intro" data-dossier-intro>
+				<h2 class="dossier__title" id="proyectos-title" data-dossier-title>
+					{sectionNumber} // {sectionTitle}
+				</h2>
+				<p class="dossier__lead" data-dossier-lead>{lead}</p>
+			</div>
+
+			<div class="filters" role="group" aria-label="Filtrar proyectos por categoría" data-filters>
+				{
+					filterItems.map((filter, index) => (
+						<button
+							class="filter"
+							type="button"
+							data-filter={filter.id}
+							aria-pressed={index === 0 ? 'true' : 'false'}
+						>
+							{filter.text}
+						</button>
+					))
+				}
+			</div>
+		</header>
+
+		<div class="grid" data-projects-grid>
+			{projects.map((project, index) => <ProjectCard project={project} index={index} />)}
+		</div>
+	</div>
+</section>
+
+<style>
+	.projects {
+		scroll-margin-top: 96px;
+		padding-block: var(--space-xl) calc(var(--space-xl) * 2);
+	}
+
+	.projects__frame {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		max-width: 1200px;
+		margin-inline: auto;
+		padding-inline: var(--margin-page);
+	}
+
+	.dossier {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-bottom: var(--space-lg);
+		border-bottom: var(--border-heavy);
+	}
+
+	.dossier__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+	}
+
+	.dossier__tag {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 6px;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--secondary-color);
+		text-transform: uppercase;
+	}
+
+	.dossier__square {
+		width: 10px;
+		height: 10px;
+		flex-shrink: 0;
+		background-color: var(--primary-color);
+	}
+
+	.dossier__file {
+		color: var(--on-surface-variant-color);
+	}
+
+	.dossier__badge {
+		padding: 6px 10px;
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		box-shadow: var(--shadow-sm);
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.1em;
+		color: var(--primary-color);
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.dossier__intro {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.dossier__title {
+		overflow: hidden;
+		padding-block: 0.06em;
+		font-size: clamp(2.75rem, 5.5vw, var(--font-headline-display-size));
+		line-height: 1.05;
+		letter-spacing: 0.02em;
+	}
+
+	.split-char {
+		display: inline-block;
+	}
+
+	.dossier__lead {
+		max-width: 58ch;
+		color: var(--on-surface-variant-color);
+	}
+
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
+		padding-top: var(--space-xs);
+	}
+
+	.filter {
+		display: inline-flex;
+		align-items: center;
+		padding: 10px 16px;
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-md);
+		color: var(--primary-color);
+		font-family: var(--headline-font);
+		font-size: var(--font-label-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press),
+			background-color var(--transition-surface),
+			color var(--transition-surface);
+	}
+
+	.filter:hover {
+		background-color: var(--surface-inset-color);
+		transform: translate(-1px, -1px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.filter[aria-pressed='true'] {
+		background-color: var(--primary-color);
+		color: var(--code-text-color);
+	}
+
+	.filter[aria-pressed='true']:hover {
+		background-color: var(--primary-color);
+		transform: none;
+		box-shadow: var(--shadow-md);
+	}
+
+	.filter:focus-visible {
+		outline: var(--border-heavy);
+		outline-offset: 3px;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-lg);
+	}
+
+	@media (min-width: 1024px) {
+		.projects__frame {
+			padding-inline: var(--margin-page-desktop);
+		}
+
+		.dossier__intro {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+		}
+
+		.dossier__title {
+			flex-shrink: 0;
+		}
+
+		.grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { SplitText } from 'gsap/SplitText';
+	import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
+
+	const section = document.querySelector<HTMLElement>('[data-projects]');
+
+	if (section) {
+		const title = section.querySelector<HTMLElement>('[data-dossier-title]');
+		const badge = section.querySelector<HTMLElement>('[data-dossier-badge]');
+		const lead = section.querySelector<HTMLElement>('[data-dossier-lead]');
+		const intro = section.querySelector<HTMLElement>('[data-dossier-intro]');
+		const filterBar = section.querySelector<HTMLElement>('[data-filters]');
+		const buttons = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+		const cards = Array.from(section.querySelectorAll<HTMLElement>('[data-project-card]'));
+		const counters = new Map<HTMLElement, { value: number }>();
+
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const runCounters = (card: HTMLElement) => {
+			card.querySelectorAll<HTMLElement>('[data-metric-value]').forEach((el) => {
+				const state = counters.get(el);
+				const to = Number(el.dataset.countTo);
+				if (!state || !Number.isFinite(to)) return;
+
+				const prefix = el.dataset.countPrefix ?? '';
+				const suffix = el.dataset.countSuffix ?? '';
+
+				gsap.to(state, {
+					value: to,
+					duration: 1.2,
+					ease: 'power2.out',
+					overwrite: true,
+					onUpdate: () => {
+						el.textContent = `${prefix}${Math.round(state.value)}${suffix}`;
+					},
+				});
+			});
+		};
+
+		const applyFilter = (id: string) => {
+			let shown = 0;
+
+			cards.forEach((card) => {
+				const categories = (card.dataset.category ?? '').split(' ').filter(Boolean);
+				const matches = id === 'all' || categories.includes(id);
+
+				if (!matches) {
+					if (reducedMotion) {
+						card.setAttribute('hidden', '');
+						return;
+					}
+
+					gsap.to(card, {
+						autoAlpha: 0,
+						y: -8,
+						duration: 0.24,
+						ease: 'power2.in',
+						overwrite: 'auto',
+						onComplete: () => card.setAttribute('hidden', ''),
+					});
+					return;
+				}
+
+				card.removeAttribute('hidden');
+
+				if (reducedMotion) return;
+
+				gsap.fromTo(
+					card,
+					{ autoAlpha: 0, y: 16 },
+					{
+						autoAlpha: 1,
+						y: 0,
+						duration: 0.45,
+						delay: shown * 0.06,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					},
+				);
+				runCounters(card);
+				shown += 1;
+			});
+
+			ScrollTrigger.refresh();
+		};
+
+		buttons.forEach((button) => {
+			button.addEventListener('click', () => {
+				buttons.forEach((other) => {
+					other.setAttribute('aria-pressed', String(other === button));
+				});
+				applyFilter(button.dataset.filter ?? 'all');
+			});
+		});
+
+		const mm = gsap.matchMedia();
+
+		mm.add('(prefers-reduced-motion: no-preference)', () => {
+			cards.forEach((card) => {
+				card.querySelectorAll<HTMLElement>('[data-metric-value]').forEach((el) => {
+					if (Number.isFinite(Number(el.dataset.countTo))) {
+						counters.set(el, { value: 0 });
+					}
+				});
+			});
+
+			const titleSplit = title ? new SplitText(title, { type: 'chars', charsClass: 'split-char' }) : null;
+			const badgeText = badge?.textContent ?? '';
+
+			const introTl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+			if (titleSplit) {
+				introTl.from(titleSplit.chars, { yPercent: 120, duration: 0.9, stagger: 0.02 }, 0.1);
+			}
+			if (lead) {
+				introTl.from(lead, { y: 14, opacity: 0, duration: 0.6, ease: 'power3.out' }, 0.35);
+			}
+			if (badge) {
+				introTl.to(
+					badge,
+					{
+						scrambleText: {
+							text: badgeText,
+							chars: 'upperCase',
+							speed: 0.3,
+							revealDelay: 0.1,
+						},
+						duration: 1,
+						ease: 'none',
+						onStart: () => {
+							badge.textContent = '';
+						},
+					},
+					0.2,
+				);
+			}
+			if (filterBar) {
+				introTl.from(
+					Array.from(filterBar.children),
+					{ y: 10, opacity: 0, duration: 0.5, stagger: 0.05, ease: 'power3.out' },
+					0.5,
+				);
+			}
+
+			gsap.set(cards, { y: 40, autoAlpha: 0 });
+
+			ScrollTrigger.batch(cards, {
+				start: 'top 92%',
+				onEnter: (batch) => {
+					gsap.to(batch, {
+						y: 0,
+						autoAlpha: 1,
+						duration: 0.7,
+						stagger: 0.08,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					});
+					batch.forEach((card) => runCounters(card as HTMLElement));
+				},
+			});
+
+			if (intro) {
+				gsap.to(intro, {
+					yPercent: -12,
+					ease: 'none',
+					scrollTrigger: {
+						trigger: intro,
+						start: 'top bottom',
+						end: 'bottom top',
+						scrub: 0.6,
+					},
+				});
+			}
+
+			return () => {
+				titleSplit?.revert();
+				cards.forEach((card) => {
+					card.removeAttribute('hidden');
+					gsap.set(card, { clearProps: 'opacity,visibility,transform' });
+				});
+			};
+		});
+	}
+</script>
