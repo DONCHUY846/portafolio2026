@@ -1,0 +1,1195 @@
+---
+import { Image } from 'astro:assets';
+import {
+	Terminal,
+	AtSign,
+	Users,
+	Code,
+	Clock,
+	CircleCheck,
+	Zap,
+	ShieldCheck,
+	Rocket,
+	ArrowRight,
+	ChevronDown,
+} from '@lucide/astro/icons';
+import avatar from '../assets/avatar-saltando.jpg';
+import { contact as defaultContact, type ContactChannelIcon, type ContactSection } from '../data/contact';
+
+const { section = defaultContact } = Astro.props as { section?: ContactSection };
+
+const channelIcons = {
+	'at-sign': AtSign,
+	users: Users,
+	code: Code,
+} satisfies Record<ContactChannelIcon, typeof AtSign>;
+---
+
+<section class="contact" id="contacto" data-contact-root aria-labelledby="contacto-title">
+	<div class="contact__frame">
+		<header class="dossier" data-contact-intro>
+			<div class="dossier__meta">
+				<p class="dossier__tag">
+					<span class="dossier__square" aria-hidden="true"></span>
+					Canal Directo // Ref: {section.ref}
+				</p>
+				<p class="dossier__availability">
+					<span class="dossier__bracket" aria-hidden="true">[</span>
+					{section.availability}
+					<span class="dossier__bracket" aria-hidden="true">]</span>
+				</p>
+			</div>
+
+			<div class="dossier__intro">
+				<div>
+					<h2 class="dossier__title" id="contacto-title" data-contact-title>
+						{section.sectionNumber} // {section.sectionTitle}
+					</h2>
+					<p class="dossier__lead">{section.lead}</p>
+				</div>
+
+				<p class="dossier__latency">
+					<span class="dossier__latency-dot" aria-hidden="true"></span>
+					{section.latency}
+				</p>
+			</div>
+		</header>
+
+		<div class="contact__grid">
+			<div class="contact__col contact__col--form">
+				<div class="window" data-contact-block>
+					<div class="window__head">
+						<p class="window__title">
+							<Terminal class="window__icon" size={18} aria-hidden="true" />
+							{section.form.windowTitle}
+						</p>
+						<span class="window__dots" aria-hidden="true">
+							<span class="window__dot window__dot--close"></span>
+							<span class="window__dot window__dot--min"></span>
+							<span class="window__dot window__dot--max"></span>
+						</span>
+					</div>
+
+					<form class="form" id="contact-form" novalidate data-contact-form>
+						{
+							section.form.fields.map((field) => (
+								<div class="field" data-field={field.id}>
+									<label class="field__label" for={field.id}>
+										<span class="field__name">
+											{field.index}. {field.label}
+											{field.required && (
+												<abbr class="field__required" title="Campo requerido">
+													*
+												</abbr>
+											)}
+										</span>
+										<span class="field__hint">{field.hint}</span>
+									</label>
+
+									{field.kind === 'select' ? (
+										<div class="select">
+											<select
+												class="select__control"
+												id={field.id}
+												name={field.id}
+												data-field-control
+											>
+												{field.options?.map((option) => (
+													<option value={option.value}>{option.label}</option>
+												))}
+											</select>
+											<ChevronDown
+												class="select__chevron"
+												size={20}
+												aria-hidden="true"
+											/>
+										</div>
+									) : field.kind === 'textarea' ? (
+										<textarea
+											class="textarea"
+											id={field.id}
+											name={field.id}
+											rows={field.rows ?? 5}
+											placeholder={field.placeholder}
+											required={field.required}
+											data-field-control
+										/>
+									) : (
+										<input
+											class="input"
+											id={field.id}
+											name={field.id}
+											type={field.kind === 'email' ? 'email' : 'text'}
+											placeholder={field.placeholder}
+											required={field.required}
+											autocomplete={field.autocomplete}
+											data-field-control
+										/>
+									)}
+
+									<p class="field__status" data-field-status role="status" aria-live="polite" />
+								</div>
+							))
+						}
+
+						<div class="form__actions">
+							<button class:list={['btn', 'btn-primary', 'form__submit']} type="submit" data-contact-submit>
+								<span>[ {section.form.submitLabel} ]</span>
+								<ArrowRight class="form__submit-arrow" size={18} aria-hidden="true" />
+							</button>
+
+							<p class="notice" data-contact-notice hidden>
+								<CircleCheck class="notice__icon" size={18} aria-hidden="true" />
+								<span>{section.form.success}</span>
+							</p>
+
+							<div class="form__meta">
+								<p class="form__latency">
+									<Zap class="form__bolt" size={16} aria-hidden="true" />
+									{section.form.latencyNote}
+								</p>
+								<p class="form__privacy">{section.form.privacyNote}</p>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="contact__col contact__col--aside">
+				<article class="status" data-contact-block>
+					<div class="status__head">
+						<h3 class="status__title">{section.statusCard.windowTitle}</h3>
+						<span class="status__badge">
+							<span class="status__dot" aria-hidden="true"></span>
+							{section.statusCard.badge}
+						</span>
+					</div>
+
+					<figure class="status__frame" data-contact-avatar>
+						<Image
+							class="status__photo"
+							src={avatar}
+							alt={section.statusCard.avatarAlt}
+							widths={[360, 480, 720, 1080]}
+							sizes="(min-width: 1024px) 420px, 90vw"
+							quality={100}
+							loading="lazy"
+							decoding="async"
+						/>
+						<figcaption class="status__caption">
+							<span class="status__caption-body">
+								<span class="status__caption-title">{section.statusCard.avatarTitle}</span>
+								<span class="status__caption-note">{section.statusCard.avatarCaption}</span>
+							</span>
+							<Rocket class="status__rocket" size={24} aria-hidden="true" />
+						</figcaption>
+					</figure>
+
+					<p class="status__paragraph">{section.statusCard.paragraph}</p>
+				</article>
+
+				<div class="channels">
+					{
+						section.channels.map((channel) => {
+							const Icon = channelIcons[channel.icon];
+							return channel.action.copy ? (
+								<div class="channel" data-contact-block>
+									<div class="channel__id">
+										<span class="channel__icon">
+											<Icon size={20} aria-hidden="true" />
+										</span>
+										<span class="channel__meta">
+											<span class="channel__label">{channel.label}</span>
+											<a class="channel__value" href={channel.href}>
+												{channel.value}
+											</a>
+										</span>
+									</div>
+									<button
+										class="channel__action"
+										type="button"
+										data-copy={channel.action.copy}
+									>
+										{channel.action.label}
+									</button>
+								</div>
+							) : (
+								<a
+									class="channel channel--link"
+									href={channel.href}
+									target={channel.external ? '_blank' : undefined}
+									rel={channel.external ? 'noopener noreferrer' : undefined}
+									data-contact-block
+								>
+									<span class="channel__id">
+										<span class="channel__icon">
+											<Icon size={20} aria-hidden="true" />
+										</span>
+										<span class="channel__meta">
+											<span class="channel__label">{channel.label}</span>
+											<span class="channel__value">{channel.value}</span>
+										</span>
+									</span>
+									<span class="channel__arrow" aria-hidden="true">
+										[ {channel.action.label} ↗ ]
+									</span>
+								</a>
+							);
+						})
+					}
+				</div>
+
+				<div class="timezone" data-contact-block>
+					<span class="timezone__icon">
+						<Clock size={20} aria-hidden="true" />
+					</span>
+					<span class="timezone__meta">
+						<span class="timezone__label">{section.timezone.label}</span>
+						<span class="timezone__value">{section.timezone.value}</span>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="band" data-contact-block>
+			<p class="band__note">
+				<ShieldCheck class="band__icon" size={18} aria-hidden="true" />
+				{section.band.label}
+			</p>
+			<a class="band__cta" href={section.band.href}>{section.band.cta} ↗</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.contact {
+		scroll-margin-top: 96px;
+		padding-block: var(--space-xl) calc(var(--space-xl) * 2);
+	}
+
+	.contact__frame {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		max-width: 1200px;
+		margin-inline: auto;
+		padding-inline: var(--margin-page);
+	}
+
+	.dossier {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-bottom: var(--space-lg);
+		border-bottom: var(--border-heavy);
+	}
+
+	.dossier__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+	}
+
+	.dossier__tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 4px 12px;
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+	}
+
+	.dossier__square {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		background-color: var(--primary-color);
+	}
+
+	.dossier__availability {
+		display: none;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 12px;
+		background-color: var(--surface-container-high-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.04em;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+	}
+
+	.dossier__bracket {
+		font-weight: 700;
+		color: var(--secondary-color);
+	}
+
+	.dossier__intro {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-md);
+	}
+
+	.dossier__title {
+		overflow: hidden;
+		padding-block: 0.06em;
+		font-size: clamp(2.75rem, 5.5vw, var(--font-headline-display-size));
+		line-height: 1.05;
+		letter-spacing: 0.02em;
+	}
+
+	.split-char {
+		display: inline-block;
+	}
+
+	.dossier__lead {
+		max-width: 60ch;
+		margin-top: var(--space-sm);
+		font-size: var(--font-body-lg-size);
+		color: var(--secondary-color);
+	}
+
+	.dossier__latency {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: 10px var(--space-md);
+		background-color: var(--surface-container-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-md);
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		font-weight: 500;
+		color: var(--on-surface-color);
+		white-space: nowrap;
+	}
+
+	.dossier__latency-dot {
+		width: 12px;
+		height: 12px;
+		flex-shrink: 0;
+		background-color: #10b981;
+		border: var(--border-thin);
+	}
+
+	.contact__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-xl);
+		align-items: start;
+	}
+
+	.contact__col {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		min-width: 0;
+	}
+
+	.window {
+		overflow: hidden;
+		background-color: var(--surface-lowest-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-xl);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.window__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		padding: 12px var(--space-md);
+		background-color: var(--surface-inset-color);
+		border-bottom: var(--border-heavy);
+	}
+
+	.window__title {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		overflow: hidden;
+		font-family: var(--label-font);
+		font-size: var(--font-code-size);
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--on-surface-color);
+		text-overflow: ellipsis;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.window__icon {
+		flex-shrink: 0;
+	}
+
+	.window__dots {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		flex-shrink: 0;
+	}
+
+	.window__dot {
+		width: 12px;
+		height: 12px;
+		border: var(--border-thin);
+		border-radius: var(--radius-full);
+	}
+
+	.window__dot--close {
+		background-color: #ff5f56;
+	}
+
+	.window__dot--min {
+		background-color: #ffbd2e;
+	}
+
+	.window__dot--max {
+		background-color: #27c93f;
+	}
+
+	.form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding: var(--space-md);
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.field__label {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		font-weight: 700;
+		line-height: 20px;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+	}
+
+	.field__required {
+		color: var(--error-color);
+		text-decoration: none;
+	}
+
+	.field__hint {
+		flex-shrink: 0;
+		font-size: 11px;
+		font-weight: 400;
+		color: var(--secondary-color);
+	}
+
+	.field__status {
+		display: none;
+		align-items: center;
+		gap: 6px;
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 16px;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.field__status:not(:empty) {
+		display: flex;
+	}
+
+	.field__status[data-state='valid'] {
+		color: #10b981;
+	}
+
+	.field__status[data-state='invalid'] {
+		color: var(--error-color);
+	}
+
+	.select {
+		position: relative;
+	}
+
+	.select__control {
+		width: 100%;
+		appearance: none;
+		padding: 12px 3rem 12px var(--space-md);
+		background-color: var(--surface-container-low-color);
+		border: var(--border-thick);
+		border-radius: var(--radius-md);
+		color: var(--primary-color);
+		font-family: var(--body-font);
+		font-size: var(--font-body-md-size);
+		text-overflow: ellipsis;
+		cursor: pointer;
+		transition:
+			background-color var(--transition-surface),
+			border-color var(--transition-press),
+			box-shadow var(--transition-press);
+	}
+
+	.select__control:focus {
+		outline: none;
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.select__chevron {
+		position: absolute;
+		inset-block: 0;
+		right: var(--space-md);
+		margin-block: auto;
+		pointer-events: none;
+		color: var(--on-surface-color);
+	}
+
+	.form__actions {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		padding-top: 8px;
+	}
+
+	.form__submit {
+		width: 100%;
+		padding: 16px var(--space-lg);
+		font-size: var(--font-headline-sm-size);
+	}
+
+	.form__submit svg {
+		transition: transform var(--transition-press);
+	}
+
+	.form__submit:hover svg {
+		transform: translateX(4px);
+	}
+
+	.notice {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px;
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		line-height: 20px;
+		color: var(--on-surface-color);
+	}
+
+	.notice[hidden] {
+		display: none;
+	}
+
+	.notice__icon {
+		flex-shrink: 0;
+		color: #10b981;
+	}
+
+	.form__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 4px var(--space-sm);
+		padding-top: 4px;
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		color: var(--secondary-color);
+	}
+
+	.form__latency {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.form__bolt {
+		flex-shrink: 0;
+		color: var(--primary-color);
+	}
+
+	.form__privacy {
+		display: none;
+		color: var(--outline-color);
+	}
+
+	.status {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding: var(--space-md);
+		background-color: var(--surface-card-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-xl);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.status__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		padding-bottom: 8px;
+		border-bottom: var(--border-heavy);
+	}
+
+	.status__title {
+		font-family: var(--label-font);
+		font-size: var(--font-label-size);
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.08em;
+		color: var(--on-surface-color);
+	}
+
+	.status__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 2px 8px;
+		background-color: var(--surface-inset-color);
+		border: var(--border-thin);
+		border-radius: var(--radius-base);
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.04em;
+		color: var(--primary-color);
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.status__dot {
+		width: 8px;
+		height: 8px;
+		flex-shrink: 0;
+		border-radius: var(--radius-full);
+		background-color: #10b981;
+	}
+
+	.status__frame {
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 1;
+		background-color: var(--surface-container-high-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+	}
+
+	.status__photo {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 300ms var(--transition-surface);
+	}
+
+	.status__frame:hover .status__photo {
+		transform: scale(1.05);
+	}
+
+	.status__caption {
+		position: absolute;
+		inset: auto 12px 12px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		padding: 10px;
+		background-color: var(--surface-lowest-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-md);
+	}
+
+	.status__caption-body {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.status__caption-title {
+		font-family: var(--headline-font);
+		font-size: var(--font-headline-sm-size);
+		font-weight: 600;
+		line-height: 26px;
+		letter-spacing: 0.02em;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+	}
+
+	.status__caption-note {
+		font-family: var(--label-font);
+		font-size: 11px;
+		line-height: 16px;
+		color: var(--secondary-color);
+	}
+
+	.status__rocket {
+		flex-shrink: 0;
+		color: var(--primary-color);
+	}
+
+	.status__paragraph {
+		color: var(--on-surface-variant-color);
+	}
+
+	.channels {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+
+	.channel {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		background-color: var(--surface-lowest-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-md);
+		transition:
+			transform var(--transition-press),
+			box-shadow var(--transition-press);
+	}
+
+	.channel:hover {
+		transform: translate(2px, 2px);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.channel__id {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		min-width: 0;
+	}
+
+	.channel__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		flex-shrink: 0;
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-base);
+		color: var(--on-surface-color);
+	}
+
+	.channel__meta {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.channel__label {
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.04em;
+		color: var(--secondary-color);
+		text-transform: uppercase;
+	}
+
+	.channel__value {
+		font-family: var(--label-font);
+		font-size: var(--font-body-md-size);
+		font-weight: 700;
+		line-height: 22px;
+		color: var(--on-surface-color);
+		overflow-wrap: break-word;
+	}
+
+	a.channel__value:hover {
+		text-decoration: underline;
+	}
+
+	.channel__action {
+		align-self: flex-start;
+		flex-shrink: 0;
+		padding: 6px 12px;
+		background-color: var(--surface-container-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-base);
+		font-family: var(--label-font);
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 18px;
+		letter-spacing: 0.04em;
+		color: var(--primary-color);
+		text-transform: uppercase;
+		transition:
+			background-color var(--transition-surface),
+			color var(--transition-surface);
+	}
+
+	.channel__action:hover,
+	.channel__action[data-copied='true'] {
+		background-color: var(--primary-color);
+		color: var(--neutral-color);
+	}
+
+	.channel__arrow {
+		align-self: flex-start;
+		flex-shrink: 0;
+		font-family: var(--headline-font);
+		font-size: var(--font-label-size);
+		font-weight: 600;
+		line-height: 18px;
+		letter-spacing: 0.06em;
+		color: var(--on-surface-color);
+		text-transform: uppercase;
+		transition: transform var(--transition-press);
+	}
+
+	.channel--link:hover .channel__arrow {
+		transform: translate(1px, -1px);
+	}
+
+	.timezone {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		padding: var(--space-md);
+		background-color: var(--surface-inset-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-lg);
+	}
+
+	.timezone__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		flex-shrink: 0;
+		background-color: var(--surface-container-high-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-base);
+		color: var(--on-surface-color);
+	}
+
+	.timezone__meta {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.timezone__label {
+		font-family: var(--label-font);
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 16px;
+		letter-spacing: 0.04em;
+		color: var(--secondary-color);
+		text-transform: uppercase;
+	}
+
+	.timezone__value {
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		font-weight: 500;
+		line-height: 20px;
+		color: var(--on-surface-color);
+	}
+
+	.band {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-md);
+		margin-top: var(--space-xl);
+		padding: var(--space-md);
+		background-color: var(--surface-container-color);
+		border: var(--border-heavy);
+		border-radius: var(--radius-xl);
+	}
+
+	.band__note {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		font-family: var(--label-font);
+		font-size: var(--font-body-sm-size);
+		color: var(--on-surface-color);
+	}
+
+	.band__icon {
+		flex-shrink: 0;
+	}
+
+	.band__cta {
+		flex-shrink: 0;
+		font-family: var(--label-font);
+		font-size: var(--font-label-size);
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--on-surface-color);
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+		text-transform: uppercase;
+		transition: color var(--transition-surface);
+	}
+
+	.band__cta:hover {
+		color: var(--secondary-color);
+	}
+
+	@media (min-width: 640px) {
+		.dossier__availability {
+			display: inline-flex;
+		}
+
+		.form {
+			padding: var(--space-lg);
+		}
+
+		.form__privacy {
+			display: block;
+		}
+
+		.band {
+			flex-direction: row;
+		}
+
+		.channel {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.contact__frame {
+			padding-inline: var(--margin-page-desktop);
+		}
+
+		.dossier__intro {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+		}
+
+		.dossier__latency {
+			align-self: flex-end;
+		}
+
+		.contact__grid {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			gap: var(--space-xl);
+		}
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { SplitText } from 'gsap/SplitText';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText);
+
+	const root = document.querySelector<HTMLElement>('[data-contact-root]');
+
+	if (root) {
+		const form = root.querySelector<HTMLFormElement>('[data-contact-form]');
+		const notice = root.querySelector<HTMLElement>('[data-contact-notice]');
+
+		const isFilled = (control: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) =>
+			control.value.trim().length > 0;
+
+		const isValid = (
+			control: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+		) => {
+			if (!isFilled(control)) return false;
+			if (control instanceof HTMLInputElement && control.type === 'email') {
+				return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(control.value.trim());
+			}
+			return true;
+		};
+
+		const setStatus = (
+			control: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+			state: 'valid' | 'invalid' | null,
+			message: string,
+		) => {
+			const field = control.closest<HTMLElement>('[data-field]');
+			const status = field?.querySelector<HTMLElement>('[data-field-status]');
+			if (!status) return;
+
+			status.textContent = message;
+			if (state) {
+				status.dataset.state = state;
+			} else {
+				delete status.dataset.state;
+			}
+		};
+
+		const validate = (control: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) => {
+			// Los `select` siempre traen un valor por defecto: no se validan.
+			if (control instanceof HTMLSelectElement) return true;
+			if (!control.required) return true;
+
+			if (isValid(control)) {
+				setStatus(control, 'valid', 'Campo válido');
+				return true;
+			}
+
+			setStatus(
+				control,
+				'invalid',
+				isFilled(control) ? 'Formato inválido' : 'Campo requerido',
+			);
+			return false;
+		};
+
+		if (form) {
+			const controls = Array.from(
+				form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-field-control]'),
+			);
+
+			controls.forEach((control) => {
+				control.addEventListener('input', () => {
+					if (isFilled(control)) validate(control);
+				});
+				control.addEventListener('blur', () => validate(control));
+			});
+
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+
+				const invalid = controls.filter((control) => !validate(control));
+
+				if (invalid.length > 0) {
+					notice?.setAttribute('hidden', '');
+					invalid[0].focus();
+					return;
+				}
+
+				/*
+				 * Sin backend por ahora: el diseño original también lo simula
+				 * ("DESPACHO SIMULADO CON ÉXITO"). Cuando exista el endpoint
+				 * real, reemplazar este bloque por el `fetch` correspondiente.
+				 */
+				notice?.removeAttribute('hidden');
+				form.reset();
+				controls.forEach((control) => {
+					if (!(control instanceof HTMLSelectElement)) setStatus(control, null, '');
+				});
+
+				window.setTimeout(() => notice?.setAttribute('hidden', ''), 5000);
+			});
+		}
+
+		const copyButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-copy]'));
+
+		copyButtons.forEach((button) => {
+			button.addEventListener('click', async () => {
+				const value = button.dataset.copy;
+				if (!value) return;
+
+				try {
+					await navigator.clipboard.writeText(value);
+				} catch {
+					return;
+				}
+
+				const original = button.textContent ?? '';
+				button.textContent = '¡Copiado!';
+				button.dataset.copied = 'true';
+
+				window.setTimeout(() => {
+					button.textContent = original;
+					delete button.dataset.copied;
+				}, 2000);
+			});
+		});
+
+		const title = root.querySelector<HTMLElement>('[data-contact-title]');
+		const lead = root.querySelector<HTMLElement>('.dossier__lead');
+		const avatar = root.querySelector<HTMLElement>('[data-contact-avatar]');
+		const blocks = Array.from(root.querySelectorAll<HTMLElement>('[data-contact-block]'));
+
+		const mm = gsap.matchMedia();
+
+		mm.add('(prefers-reduced-motion: no-preference)', () => {
+			const titleSplit = title ? new SplitText(title, { type: 'chars', charsClass: 'split-char' }) : null;
+
+			const introTl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+			if (titleSplit) {
+				introTl.from(titleSplit.chars, { yPercent: 120, duration: 0.9, stagger: 0.02 }, 0.1);
+			}
+			if (lead) {
+				introTl.from(lead, { y: 14, opacity: 0, duration: 0.6, ease: 'power3.out' }, 0.35);
+			}
+
+			gsap.set(avatar ?? [], { y: 24, autoAlpha: 0 });
+
+			ScrollTrigger.batch(avatar ? [avatar] : [], {
+				start: 'top 92%',
+				onEnter: (batch) => {
+					gsap.to(batch, {
+						y: 0,
+						autoAlpha: 1,
+						duration: 0.7,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					});
+				},
+			});
+
+			blocks.forEach((block) => {
+				gsap.from(block, {
+					scrollTrigger: {
+						trigger: block,
+						start: 'top 96%',
+						once: true,
+					},
+					y: 20,
+					autoAlpha: 0,
+					duration: 0.7,
+					ease: 'power3.out',
+				});
+			});
+
+			return () => {
+				titleSplit?.revert();
+				gsap.set(avatar ? [avatar] : [], { clearProps: 'opacity,visibility,transform' });
+			};
+		});
+	}
+</script>

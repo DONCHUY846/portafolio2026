@@ -476,10 +476,13 @@ const {
 
 		const syncInverted = () => {
 			frame = 0;
-			const threshold = header.offsetHeight;
-			const inverted = invertTargets.some(
-				(target) => target.getBoundingClientRect().top < threshold,
-			);
+			const band = header.offsetHeight;
+			// Solo mientras la sección oscura realmente tape la barra: su borde
+			// superior debe estar por encima de la barra y el inferior por debajo.
+			const inverted = invertTargets.some((target) => {
+				const rect = target.getBoundingClientRect();
+				return rect.top < band && rect.bottom > 0;
+			});
 			header.classList.toggle('header--dark', inverted);
 		};
 
