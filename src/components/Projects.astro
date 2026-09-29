@@ -235,14 +235,27 @@ const filterItems = filters.map((filter) => ({
 			padding-inline: var(--margin-page-desktop);
 		}
 
+		/*
+		 * Titulo y lead conviven en fila. El titulo puede encojer y envolver
+		 * (`min-width: 0` + `flex: 1 1 auto`); con `flex-shrink: 0` nunca
+		 * envolvia, se comia el ancho disponible y aplastaba el lead a ~100px
+		 * o, con titulos largos, desbordaba el contenedor.
+		 */
 		.dossier__intro {
 			flex-direction: row;
 			align-items: flex-end;
 			justify-content: space-between;
+			gap: var(--space-xl);
 		}
 
 		.dossier__title {
-			flex-shrink: 0;
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		.dossier__lead {
+			flex: 0 0 36%;
+			max-width: none;
 		}
 
 		.grid {
@@ -361,7 +374,16 @@ const filterItems = filters.map((filter) => ({
 				});
 			});
 
-			const titleSplit = title ? new SplitText(title, { type: 'chars', charsClass: 'split-char' }) : null;
+			/*
+			 * `words,chars` y no solo `chars`: GSAP pone `display:inline-block`
+			 * a cada caracter, y con `chars` a secas el navegador puede cortar
+			 * linea entre cualesquiera dos letras (partiendo palabras a la
+			 * mitad). Al anidar los chars dentro de `words`, el corte solo
+			 * ocurre entre palabras.
+			 */
+			const titleSplit = title
+				? new SplitText(title, { type: 'words,chars', charsClass: 'split-char' })
+				: null;
 			const badgeText = badge?.textContent ?? '';
 
 			const introTl = gsap.timeline({ defaults: { ease: 'expo.out' } });

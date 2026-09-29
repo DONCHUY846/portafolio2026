@@ -1146,7 +1146,10 @@ const channelIcons = {
 		const mm = gsap.matchMedia();
 
 		mm.add('(prefers-reduced-motion: no-preference)', () => {
-			const titleSplit = title ? new SplitText(title, { type: 'chars', charsClass: 'split-char' }) : null;
+			// `words,chars` evita que GSAP permita cortar linea a mitad de palabra.
+			const titleSplit = title
+				? new SplitText(title, { type: 'words,chars', charsClass: 'split-char' })
+				: null;
 
 			const introTl = gsap.timeline({ defaults: { ease: 'expo.out' } });
 
