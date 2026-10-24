@@ -5,6 +5,7 @@ import avatar from '../assets/avatar-frente.jpg';
 const {
 	firstName = 'JESÚS',
 	lastName = 'AVIÑA',
+	fullName = 'Jesús Aviña Alcalá',
 	role = 'FRONTEND ARCHITECT',
 	tagline = 'I build design systems, component libraries, and fast interfaces that stay maintainable as they scale.',
 	primaryCta = { label: 'VER PROYECTOS', href: '#proyectos' },
@@ -19,10 +20,11 @@ const {
 	<div class="hero__body">
 		<div class="hero__masthead">
 			<h1 class="hero__name">
-				<span class="hero__given" data-hero-given>
+				<span class="sr-only">{fullName} — Desarrollador de Software</span>
+				<span class="hero__given" data-hero-given aria-hidden="true">
 					<span class="hero__name-text" data-hero-name-text>{firstName}</span>
 				</span>
-				<span class="hero__card-wrap" data-hero-card-wrap>
+				<span class="hero__card-wrap" data-hero-card-wrap aria-hidden="true">
 					<span class="hero__card" data-hero-card>
 						<Image
 							class="hero__photo"
@@ -38,7 +40,7 @@ const {
 						<span class="hero__glare" data-hero-glare aria-hidden="true"></span>
 					</span>
 				</span>
-				<span class="hero__family" data-hero-family>
+				<span class="hero__family" data-hero-family aria-hidden="true">
 					<span class="hero__name-text" data-hero-name-text>{lastName}</span>
 				</span>
 			</h1>
@@ -46,7 +48,7 @@ const {
 
 		<div class="hero__intro" data-hero-intro>
 			<p class="hero__role" data-hero-role>{role}</p>
-			<p class="hero__tagline" data-hero-tagline>{tagline}</p>
+			<p class="hero__tagline" data-hero-tagline lang="en">{tagline}</p>
 		</div>
 
 		<div class="hero__actions" data-hero-actions>

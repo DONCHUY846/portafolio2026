@@ -1,3 +1,5 @@
+import { site } from './site';
+
 export type AboutVariant = 'light' | 'dark';
 
 export interface AboutMeta {
@@ -196,10 +198,10 @@ export const about: AboutSection = {
 
 	actions: [
 		{
-			label: 'Descargar CV / Resume',
-			href: '/jesus-avina-cv.pdf',
+			// Si publicas el PDF en /jesus-avina-cv.pdf, cambia el href y añade icon: 'download'.
+			label: 'Solicitar CV / Resume',
+			href: `mailto:${site.email}?subject=Solicitud%20de%20CV`,
 			variant: 'primary',
-			icon: 'download',
 		},
 		{
 			label: 'Ver Proyectos Seleccionados',

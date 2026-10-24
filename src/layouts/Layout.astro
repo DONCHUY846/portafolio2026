@@ -1,16 +1,144 @@
 ---
 import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	type?: 'profile' | 'website';
+}
+
+const {
+	title = site.title,
+	description = site.description,
+	image = site.ogImage,
+	type = 'profile',
+} = Astro.props as Props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+const canonicalUrl = canonical.href;
+const imageUrl = new URL(image, canonical).href;
+const origin = canonical.origin;
+const personId = `${origin}/#person`;
+const websiteId = `${origin}/#website`;
+const webpageId = `${origin}/#webpage`;
+const dateModified = new Date().toISOString().split('T')[0];
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'Person',
+			'@id': personId,
+			name: site.name,
+			alternateName: site.alternateNames,
+			url: site.url,
+			image: imageUrl,
+			jobTitle: site.role,
+			description: site.description,
+			email: site.email,
+			address: {
+				'@type': 'PostalAddress',
+				addressCountry: site.location.country,
+			},
+			knowsAbout: [
+				'React',
+				'Next.js',
+				'TypeScript',
+				'Design Systems',
+				'Frontend Architecture',
+				'Web Performance',
+				'Accessibility',
+			],
+			knowsLanguage: ['es', 'en'],
+			hasOccupation: {
+				'@type': 'Occupation',
+				name: site.role,
+				occupationLocation: {
+					'@type': 'Country',
+					name: site.location.label,
+				},
+				skills: 'React, Next.js, TypeScript, design systems, web performance and accessibility',
+			},
+			sameAs: site.sameAs,
+		},
+		{
+			'@type': 'WebSite',
+			'@id': websiteId,
+			url: site.url,
+			name: `${site.name} — Portafolio`,
+			description: site.description,
+			inLanguage: site.locale,
+			publisher: { '@id': personId },
+		},
+		{
+			'@type': 'ProfilePage',
+			'@id': webpageId,
+			url: canonicalUrl,
+			name: title,
+			description,
+			isPartOf: { '@id': websiteId },
+			about: { '@id': personId },
+			mainEntity: { '@id': personId },
+			inLanguage: site.locale,
+			dateModified,
+		},
+	],
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={site.locale}>
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content={site.name} />
+		<meta
+			name="robots"
+			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+		/>
+		<meta name="application-name" content={site.name} />
+		<meta name="theme-color" content="#fbf9f3" />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={`${site.name} — Portafolio`} />
+		<meta property="og:locale" content="es_MX" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={site.ogImageAlt} />
+		<meta property="profile:first_name" content={site.firstName} />
+		<meta property="profile:last_name" content={site.lastName} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+		<meta name="twitter:image:alt" content={site.ogImageAlt} />
+
+		<link rel="me" href={site.profiles.github} />
+		<link rel="me" href={site.profiles.linkedin} />
+
+		{site.googleSiteVerification && (
+			<meta name="google-site-verification" content={site.googleSiteVerification} />
+		)}
+
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content="Jesus Avina — React frontend architect and web engineer." />
-		<title>Jesus Avina</title>
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)}></script>
 	</head>
 	<body>
 		<slot />

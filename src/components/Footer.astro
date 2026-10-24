@@ -1,6 +1,7 @@
 ---
 import { ArrowUpRight, Mail } from '@lucide/astro/icons';
 import { siGithub } from 'simple-icons';
+import { site } from '../data/site';
 
 type IconKey = 'github' | 'linkedin' | 'mail';
 
@@ -11,9 +12,9 @@ interface SocialLink {
 }
 
 const defaultSocialLinks: SocialLink[] = [
-	{ label: 'GITHUB', href: 'https://github.com', icon: 'github' },
-	{ label: 'LINKEDIN', href: 'https://linkedin.com', icon: 'linkedin' },
-	{ label: 'EMAIL', href: 'mailto:jesusavina@example.com', icon: 'mail' },
+	{ label: 'GITHUB', href: site.profiles.github, icon: 'github' },
+	{ label: 'LINKEDIN', href: site.profiles.linkedin, icon: 'linkedin' },
+	{ label: 'EMAIL', href: `mailto:${site.email}`, icon: 'mail' },
 ];
 
 const linkedinPath =
@@ -46,7 +47,8 @@ const {
 								class="social"
 								href={link.href}
 								target={isExternal(link.href) ? '_blank' : undefined}
-								rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+								rel={isExternal(link.href) ? 'me noopener noreferrer' : undefined}
+								aria-label={`${link.label} de ${site.name}`}
 							>
 								<span class="social__icon" aria-hidden="true">
 									{link.icon === 'github' && (

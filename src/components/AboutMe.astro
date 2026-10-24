@@ -107,7 +107,11 @@ const isExternal = (href: string) => href.startsWith('http');
 					</ul>
 				</section>
 
-				<section class="panel panel--stack" aria-labelledby="sobre-mi-stack-title">
+				<section
+					class="panel panel--stack"
+					id="stack"
+					aria-labelledby="sobre-mi-stack-title"
+				>
 					<div class="panel__head">
 						<h3 class="panel__headline" id="sobre-mi-stack-title">{section.stackTitle}</h3>
 						<span class="panel__note">{section.stackNote}</span>
@@ -209,7 +213,7 @@ const isExternal = (href: string) => href.startsWith('http');
 								{action.icon === 'download' && <Download size={18} aria-hidden="true" />}
 								<span class="action__label">{action.label}</span>
 								<span class="action__glyph" aria-hidden="true">
-									{action.variant === 'primary' ? '↓' : '→'}
+									{action.icon === 'download' ? '↓' : '→'}
 								</span>
 							</a>
 						))
@@ -391,6 +395,7 @@ const isExternal = (href: string) => href.startsWith('http');
 	}
 
 	.panel--stack {
+		scroll-margin-top: 96px;
 		padding: var(--space-md);
 		background-color: var(--surface-inset-color);
 		box-shadow: var(--shadow-md);

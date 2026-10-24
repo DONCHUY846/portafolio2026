@@ -1,4 +1,6 @@
 ---
+import { site } from '../data/site';
+
 interface NavLink {
 	num: string;
 	label: string;
@@ -19,14 +21,14 @@ const {
 	activePath = '',
 	links = defaultLinks,
 	ctaLabel = 'CONTACTAR',
-	ctaHref = 'mailto:jesusavina@example.com',
+	ctaHref = `mailto:${site.email}`,
 } = Astro.props;
 ---
 
 <header class="header" data-header>
 	<div class="header__bar">
 		<div class="header__identity">
-			<a class="brand" href={brandHref}>{brand}</a>
+			<a class="brand" href={brandHref} aria-label={`${site.name} — Inicio`}>{brand}</a>
 			<p class="status">
 				<span class="status__dot" aria-hidden="true"></span>
 				<span class="status__label">{status}</span>

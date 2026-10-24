@@ -1,3 +1,5 @@
+import { site } from './site';
+
 export type ContactFieldKind = 'text' | 'email' | 'select' | 'textarea';
 
 export type ContactChannelIcon = 'at-sign' | 'users' | 'code';
@@ -167,23 +169,23 @@ export const contact: ContactSection = {
 		{
 			icon: 'at-sign',
 			label: 'Correo Directo',
-			value: 'jesusavina.dev@gmail.com',
-			href: 'mailto:jesusavina.dev@gmail.com',
-			action: { label: 'Copiar', copy: 'jesusavina.dev@gmail.com' },
+			value: site.email,
+			href: `mailto:${site.email}`,
+			action: { label: 'Copiar', copy: site.email },
 		},
 		{
 			icon: 'users',
 			label: 'Red Profesional',
-			value: 'linkedin.com/in/jesusavina',
-			href: 'https://linkedin.com/in/jesusavina',
+			value: 'linkedin.com/in/jesus-aviña-alcala',
+			href: site.profiles.linkedin,
 			external: true,
 			action: { label: 'Conectar' },
 		},
 		{
 			icon: 'code',
 			label: 'Repositorios Públicos',
-			value: 'github.com/jesusavina',
-			href: 'https://github.com/jesusavina',
+			value: 'github.com/donchuy846',
+			href: site.profiles.github,
 			external: true,
 			action: { label: 'Ver Código' },
 		},
@@ -197,6 +199,6 @@ export const contact: ContactSection = {
 	band: {
 		label: 'Auditorías de rendimiento disponibles // Benchmarks y design systems tokenizados',
 		cta: 'Agendar llamada técnica (Cal.com)',
-		href: 'mailto:jesusavina.dev@gmail.com?subject=Reunión%20Técnica',
+		href: `mailto:${site.email}?subject=Reunión%20Técnica`,
 	},
 };
