@@ -267,3 +267,11 @@ const sentenceCase = (value: string) => value.charAt(0) + value.slice(1).toLower
 		padding: 8px 16px;
 	}
 </style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-links]');
+
+	if (root) {
+		import('../scripts/links-motion').then((module) => module.initLinksMotion(root));
+	}
+</script>
