@@ -74,7 +74,16 @@ export function initLinksMotion(root: HTMLElement): () => void {
 			tl.fromTo(
 				cards,
 				{ y: 24, opacity: 0, rotate: -1.5 },
-				{ y: 0, opacity: 1, rotate: 0, duration: 0.7, stagger: 0.08, ease: 'expo.out' },
+				{
+					y: 0,
+					opacity: 1,
+					rotate: 0,
+					duration: 0.7,
+					stagger: 0.08,
+					ease: 'expo.out',
+					// Devolver el transform al CSS para que hover/active de la marca funcionen.
+					onComplete: () => gsap.set(cards, { clearProps: 'transform' }),
+				},
 				0.85,
 			);
 		}
@@ -94,7 +103,8 @@ export function initLinksMotion(root: HTMLElement): () => void {
 		if (document.fonts?.ready) document.fonts.ready.then(play).catch(play);
 
 		/* ---------- Tilt 3D ---------- */
-		const tiltTargets = [profile, ...cards].filter(
+		// El tilt va sobre el <li> para no pisar el transform de hover/active del <a>.
+		const tiltTargets = [profile, ...cards.map((card) => card.closest('li') ?? card)].filter(
 			(el): el is HTMLElement => el instanceof HTMLElement,
 		);
 
@@ -219,15 +229,27 @@ export function initLinksMotion(root: HTMLElement): () => void {
 		}
 
 		/* ---------- Fondo shader ---------- */
+		let disposed = false;
 		if (canvas) {
-			import('../scripts/hero-grid')
-				.then((module) => {
-					shaderDispose = module.initHeroGrid(canvas);
-				})
-				.catch(() => {});
+			const loadShader = () => {
+				if (disposed) return;
+				import('../scripts/hero-grid')
+					.then((module) => {
+						if (disposed) return;
+						shaderDispose = module.initHeroGrid(canvas);
+					})
+					.catch(() => {});
+			};
+
+			if (typeof window.requestIdleCallback === 'function') {
+				window.requestIdleCallback(loadShader, { timeout: 2000 });
+			} else {
+				window.addEventListener('load', loadShader, { once: true });
+			}
 		}
 
 		return () => {
+			disposed = true;
 			started = true;
 			window.clearTimeout(fallback);
 			tl.kill();
