@@ -23,7 +23,7 @@ const origin = canonical.origin;
 const personId = `${origin}/#person`;
 const websiteId = `${origin}/#website`;
 const webpageId = `${origin}/#webpage`;
-const dateModified = new Date().toISOString().split('T')[0];
+const dateModified = site.updated;
 
 const jsonLd = {
 	'@context': 'https://schema.org',
@@ -79,8 +79,8 @@ const jsonLd = {
 			name: title,
 			description,
 			isPartOf: { '@id': websiteId },
-			about: { '@id': personId },
-			mainEntity: { '@id': personId },
+			about: { '@id': personId, '@type': 'Person', name: site.name },
+			mainEntity: { '@id': personId, '@type': 'Person', name: site.name },
 			inLanguage: site.locale,
 			dateModified,
 		},

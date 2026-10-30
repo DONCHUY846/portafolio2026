@@ -32,6 +32,12 @@ export const site = {
 	profiles,
 	sameAs: [profiles.github, profiles.linkedin],
 	/**
+	 * Última modificación real del contenido, en ISO 8601 con hora y zona.
+	 * Google exige un DateTime completo para `dateModified`; actualízala al
+	 * cambiar textos, proyectos o metadatos (no en cada deploy).
+	 */
+	updated: '2026-10-30T08:00:00-06:00',
+	/**
 	 * Pega aquí el token de Google Search Console si verificas con la metaetiqueta.
 	 * Si verificas con el archivo HTML, puedes dejarlo vacío.
 	 */
